@@ -1,0 +1,8 @@
+prefix=/home/matt/Waterloo/FYDP/ROS/catkin_ws/install
+
+Name: unity_communication
+Description: Description of unity_communication
+Version: 0.0.0
+Cflags: -I/home/matt/Waterloo/FYDP/ROS/catkin_ws/install/include
+Libs: -L/home/matt/Waterloo/FYDP/ROS/catkin_ws/install/lib 
+Requires: roscpp rospy std_msgs geometry_msgs message_runtime
