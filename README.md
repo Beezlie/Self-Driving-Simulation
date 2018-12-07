@@ -18,7 +18,7 @@ Add some basic info here.
 3. Source ROS melodic automatically for every bash session:
 
 ```
-echo "source /opt/ros/lunar/setup.bash" >> ~/.bashrc
+echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
