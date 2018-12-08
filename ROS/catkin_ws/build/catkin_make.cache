@@ -1,2 +1,0 @@
-unity_communication
--DCATKIN_DEVEL_PREFIX=/home/matt/Waterloo/FYDP/ROS/catkin_ws/devel -DCMAKE_INSTALL_PREFIX=/home/matt/Waterloo/FYDP/ROS/catkin_ws/install -G Unix Makefiles
