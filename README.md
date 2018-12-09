@@ -5,7 +5,7 @@ Add some basic info here.
 
 # Installation Instructions:
 
-## Install ROS
+## ROS
 
 ### Mac
 
@@ -22,6 +22,8 @@ echo "source /opt/ros/melodic/setup.bash" >> ~/.bashrc
 source ~/.bashrc
 ```
 
-## Install Unity:
+## Unity:
 
 1. Download and install [Unity](https://unity3d.com/get-unity/download)
+
+2. Install [Git-LFS](https://git-lfs.github.com/) for version control of large files.
