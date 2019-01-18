@@ -14,12 +14,14 @@ public class egoCarController : MonoBehaviour
     public float SteeringAngle { get; set; }
     public float Acceleration { get; set; }
     private Steering s;
+   // private Collider collider;
 
     private void Awake()
     {
         // get the car controller
         m_Car = GetComponent<CarController>();
         s = new Steering();
+        //collider = GetComponent<Collider>();
         s.Start();
     }
 
@@ -36,4 +38,27 @@ public class egoCarController : MonoBehaviour
             m_Car.Move(SteeringAngle, Acceleration, Acceleration, 0f);
         }
     }
+
+    /*
+    private void Update()
+    {
+        // get the distance to ground
+        float distToGround = collider.bounds.extents.y;
+        if (!IsGrounded(distToGround)) {
+            ResetEgoPosition();
+        }
+
+    }
+
+    private bool IsGrounded(float distToGround)
+    {
+        return Physics.Raycast(transform.position, -Vector3.up, distToGround + 0.1f);
+    }
+
+    private void ResetEgoPosition()
+    {
+        this.transform.position = new Vector3(0, 0, 0);
+        this.transform.rotation = new Quaternion(0, 0, 0, 0);
+    }
+    */
 }
