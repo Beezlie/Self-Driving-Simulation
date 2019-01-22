@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/config/vrep_sim/params.yaml
 public static class Constants {
 
     public static float steeringCommandMin = -Mathf.PI / 6f;

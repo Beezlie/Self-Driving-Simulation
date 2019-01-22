@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+//references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/src/adas_common/src/lateral_controllers.cpp
 public class StanleyController : LateralController
 {
-
     private float kPHeading;
     private float kDHeading;
     private float kCrosstrack;
