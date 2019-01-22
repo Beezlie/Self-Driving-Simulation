@@ -27,21 +27,21 @@ public class CarSim : MonoBehaviour
         carController = new CarController();
         steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
-
-        goal = new Pose(new Vector3(0,0,0), new Quaternion(0,0,0,0));       //temporary
     }
 
     void Update()
     {
-        carController.treadmillVelCallback(new RosSharp.RosBridgeClient.Messages.Geometry.Twist());      // temporary
+        goal = new Pose(new Vector3(Random.value, 0, 0), new Quaternion(0, 0, 0, 0));       //temporary
+
+        carController.treadmillVelCallback();      // temporary
         // TODO - get pose and send to controller goal pose callback
-        // TODO - send correct pose
+        // TODO - send correct pose (pose = goal = waypoint I think)
         carController.goalPoseCallback(goal);       //temporary
 
-        // TODO - sync car controller with position of sprite
-        Vector3 linearVel = new Vector3(rb.velocity.x, rb.velocity.y, 0);
-        //TODO - figure out how to get angular velocity to a Twist
-        carController.syncCallback(new Pose(transform.position, transform.rotation), new RosSharp.RosBridgeClient.Messages.Geometry.Twist());        //temporary
+        // TODO - make sure way I am getting linear and angular velocity is right
+        Vector3 linearVel = new Vector3(rb.velocity.x, rb.velocity.y);
+        float angularVel = rb.angularVelocity;
+        carController.syncCallback(new Pose(transform.position, transform.rotation),linearVel, angularVel);        //temporary
 
         // TODO - get command from car controller
         command = carController.command;        //temporary

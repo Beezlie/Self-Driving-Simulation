@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using RosSharp.RosBridgeClient;
 
 //references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/src/treadmill_controller/src/treadmill_controller.cpp
 public class TrackController {
@@ -33,17 +32,15 @@ public class TrackController {
         return throttle;
     }
 
-    // I THINK THIS FUNCTION USES FEEDBACK FROM ENCODERS - THEREFORE IT ISNT NEEDED
-    /*
-    private void velCallback(Messages.Geometry.Twist twist)
+    // I THINK THIS FUNCTION USES FEEDBACK FROM ENCODERS - THEREFORE IT ISNT NEEDED FOR SIMULATION DEMO
+    private void velCallback(Vector3 linearVel, float angularVel)
     {
         float throt;
         // SOURCE CODE WAS MISSING LAST ARGUMENT - USED FALSE HERE BUT NOT SURE IF CORRECT
-        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), twist.linear.x, Time.deltaTime, false);
+        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), linearVel.x, Time.deltaTime, false);
         throt = c;
         //TODO - use the throttle to control track speed
     }
-    */
 
     private float calculateFeedforward(float requestedVel)
     {

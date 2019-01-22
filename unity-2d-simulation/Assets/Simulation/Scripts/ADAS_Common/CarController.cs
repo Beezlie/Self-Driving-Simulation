@@ -1,5 +1,4 @@
 using UnityEngine;
-using RosSharp.RosBridgeClient;
 
 // references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/src/car_controller/src/car_controller.cpp
 public class CarController
@@ -60,9 +59,9 @@ public class CarController
         velController = new PIDController(Constants.pVel, Constants.iVel, Constants.dVel, Constants.throttleCommandMin, Constants.throttleCommandMax);
         posController = new PIDController(Constants.pPos, Constants.iPos, Constants.dPos, Constants.velMin, Constants.velMax);
         headController = new StanleyController(Constants.kpHeading, Constants.kdHeading, Constants.kCrosstrack, Constants.velDamping, Constants.axleDistance);
-        velKFeedforward = 0;
-        discontinuityThreshold = 0;
-        posIThreshold = 0;
+        velKFeedforward = Constants.kFeedForward;
+        discontinuityThreshold = Constants.discontinuityThreshold;
+        posIThreshold = Constants.iThreshold;
         goalReceived = false;
     }
 
@@ -111,8 +110,8 @@ public class CarController
         headController.setVelDamping(velDamping);
     }
 
-    //TODO - make this private once ROS# implemented
-    public void syncCallback(Pose pose, RosSharp.RosBridgeClient.Messages.Geometry.Twist twist)
+    //TODO - make this private once ROS# implemented and pass in ROS Pose instead of system Pose
+    public void syncCallback(Pose pose, Vector3 linearVel, float angularVel)
     {
         if (!goalReceived)
         {
@@ -135,15 +134,16 @@ public class CarController
             * Now calculate the throttle required for the specified velocity.
             * NOTE: Accumulate I term iff we're close to the goal.
         */
+        //TODO - double check anywhere I used deltaTime to make sure that's actually the correct way to do this
         float throtCommand = velController.commandStep(treadmillVel * velKFeedforward,
-                                                        twist.linear.x + treadmillVel,
+                                                        linearVel.x + treadmillVel,
                                                         Time.deltaTime,
                                                         Mathf.Abs(pose.position.x - posController.getGoal()) < posIThreshold);
 
         //TODO - double check anywhere I used deltaTime to make sure that's actually correct
         float headCommand = headController.commandStep(observedPose,
-                                                        new Vector3(treadmillVel + twist.linear.x, twist.linear.y, 0),
-                                                        twist.angular.z,
+                                                        new Vector3(treadmillVel + linearVel.x, linearVel.y, 0),
+                                                        angularVel,
                                                         Time.deltaTime);
 
         //TODO - now have to send throttle and head commands somewhere to control the car
@@ -170,9 +170,10 @@ public class CarController
     }
 
     // TODO - fix this once using ROS# and make private
-    public void treadmillVelCallback(RosSharp.RosBridgeClient.Messages.Geometry.Twist twist)
+    public void treadmillVelCallback()
     {
         //treadmillVel = twist.linear.x;
+        //TODO - get the value from the track
         treadmillVel = 1;       // temporary
     }
 

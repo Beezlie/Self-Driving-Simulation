@@ -645,7 +645,7 @@ PlayerSettings:
   cloudServicesEnabled:
     UNet: 1
   facebookSdkVersion: 7.9.4
-  apiCompatibilityLevel: 2
+  apiCompatibilityLevel: 3
   cloudProjectId: 14b39401-6984-4ddf-8e18-5218a2d33d3e
   projectName: ROS#_Test
   organizationId: devanshmalik
