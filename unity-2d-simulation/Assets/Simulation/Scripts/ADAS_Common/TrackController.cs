@@ -10,8 +10,6 @@ public class TrackController {
     private float slope;
     private float intercept;
 
-    public float throttle;  //Temporary until ROS# communication implemented (then it gets published)
-
     public TrackController()
     {
         slope = Constants.trackSlope;
@@ -27,19 +25,17 @@ public class TrackController {
         // Kickstart with the feedforward
         float feedforward = calculateFeedforward(controller.getGoal());
 
-        throttle = feedforward;
-        ///TODO publish throttle
+        float throttle = feedforward;
         return throttle;
     }
 
-    // I THINK THIS FUNCTION USES FEEDBACK FROM ENCODERS - THEREFORE IT ISNT NEEDED FOR SIMULATION DEMO
-    private void velCallback(Vector3 linearVel, float angularVel)
+    //TODO - make this private void and publish throttle once ROS# communication implemented
+    public float velCallback(float trackVel)
     {
         float throt;
-        // SOURCE CODE WAS MISSING LAST ARGUMENT - USED FALSE HERE BUT NOT SURE IF CORRECT
-        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), linearVel.x, Time.deltaTime, false);
+        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), trackVel, Time.deltaTime, true);
         throt = c;
-        //TODO - use the throttle to control track speed
+        return throt;
     }
 
     private float calculateFeedforward(float requestedVel)
@@ -57,5 +53,5 @@ public class TrackController {
 
         return throt;
     }
-    }
+}
 
