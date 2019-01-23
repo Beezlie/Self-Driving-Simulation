@@ -14,8 +14,6 @@ public class CarController
     private float discontinuityThreshold;
     private bool goalReceived;
 
-    public CarCommand command;      //temporary
-
     public class PIDParams
     {
         public float p;
@@ -111,22 +109,25 @@ public class CarController
     }
 
     //TODO - make this private once ROS# implemented and pass in ROS Pose instead of system Pose
-    public void syncCallback(Pose pose, Vector3 linearVel, float angularVel)
+    public CarCommand syncCallback(Pose pose, Vector3 linearVel, float angularVel)
     {
         if (!goalReceived)
         {
-            return;
+            return new CarCommand(0, 0);
         }
 
         //TODO - check to make sure this is doing same thing as before
         Pose observedPose = new Pose(pose.position, pose.rotation);
+        Debug.Log(string.Format("Observed pose of car: {0}", observedPose));
+        Debug.Log(string.Format("Target goal of car: {0}", posController.getGoal()));
 
         // Velocity at which we'd like to approach the goal.
-        // TODO - SOURCE CODE WAS MISSING LAST ARGUMENT - USED FALSE HERE BUT NOT SURE IF CORRECT
-        float velCommand = posController.commandStep(0, observedPose.position.x, Time.deltaTime, false);
+        float velCommand = posController.commandStep(0, observedPose.position.x, 1 / Constants.targetHz, true);
+        Debug.Log(string.Format("Velocity to approach the goal with: {0}", velCommand));
 
         // Set goal to approach the goal AND maintain position.
         float desiredVel = velCommand + treadmillVel;
+        Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", velCommand));
         velController.setGoal(desiredVel);
 
         // Explicit decision: No reset of D term calculation. It's not user-controlled and is assumed to be "reasonably continuous."
@@ -134,21 +135,18 @@ public class CarController
             * Now calculate the throttle required for the specified velocity.
             * NOTE: Accumulate I term iff we're close to the goal.
         */
-        //TODO - double check anywhere I used deltaTime to make sure that's actually the correct way to do this
         float throtCommand = velController.commandStep(treadmillVel * velKFeedforward,
                                                         linearVel.x + treadmillVel,
-                                                        Time.deltaTime,
+                                                        1 / Constants.targetHz,
                                                         Mathf.Abs(pose.position.x - posController.getGoal()) < posIThreshold);
 
-        //TODO - double check anywhere I used deltaTime to make sure that's actually correct
         float headCommand = headController.commandStep(observedPose,
                                                         new Vector3(treadmillVel + linearVel.x, linearVel.y, 0),
                                                         angularVel,
-                                                        Time.deltaTime);
+                                                        1 / Constants.targetHz);
 
         //TODO - now have to send throttle and head commands somewhere to control the car
-        //THIS SHOULD BE WHAT ACTUALLY MOVES IT
-        command =  new CarCommand(headCommand, throtCommand);
+        return new CarCommand(headCommand, throtCommand);
     }
 
     //TODO - make this private once ROS# implemented
@@ -170,11 +168,10 @@ public class CarController
     }
 
     // TODO - fix this once using ROS# and make private
-    public void treadmillVelCallback()
+    public void treadmillVelCallback(GameObject treadmill)
     {
-        //treadmillVel = twist.linear.x;
-        //TODO - get the value from the track
-        treadmillVel = 1;       // temporary
+        treadmillVel = treadmill.gameObject.GetComponent<TrackSim>().vel;
+        Debug.Log(string.Format("Treadmill velocity in car controller: {0}", treadmillVel));
     }
 
     private void resetCallback()

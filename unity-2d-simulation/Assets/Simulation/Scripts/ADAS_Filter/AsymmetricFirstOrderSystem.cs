@@ -17,7 +17,6 @@ public class AsymmetricFirstOrderSystem {
 
     public AsymmetricFirstOrderSystem(float k, float increaseTau, float decreaseTau, float samplingFreqHz, float initialOutput)
     {
-        Debug.Log("Creating sys");
         prev = 0f;
         beenIncreasing = true;
         increaseSystem = new FirstOrderSystem(k, increaseTau, samplingFreqHz, initialOutput);

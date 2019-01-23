@@ -3,43 +3,41 @@
 //references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/src/vrep_sim/src/sim_treadmill.cpp
 public class TrackSim : MonoBehaviour
 {
-    private float speed = 1f;
+    private float speedGoal;
+    public float vel = 0f;
     private float elapsed = 0f;
     private float throttle;
-    private Vector2 offset;
 
     private TrackController trackController;
     private AsymmetricFirstOrderSystem sys;
 
-    //temporary below
-    private float nextActionTime = 0.0f;
-    public float period = 0.1f;
-
     private void Start()
     {
         InvokeRepeating("ModifySpeed", 0f, 10f);        //for testing
+        InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
 
         trackController = new TrackController();
         sys = new AsymmetricFirstOrderSystem(Constants.trackSimK, Constants.trackSimIncreaseTau, Constants.trackSimDecreaseTau, Constants.targetHz, 0f);
     }
 
-    private void Update()
+    private void CalculateControls()
     {
-        Debug.Log(string.Format("track throttle: {0}", throttle));
-        float vel = sys.Output(throttle);
-        Debug.Log(string.Format("track vel: {0}", vel));
+        //Debug.Log(string.Format("track throttle: {0}", throttle));
+        vel = sys.Output(throttle);
+        //Debug.Log(string.Format("track vel: {0}", vel));
         throttle = trackController.velCallback(vel);
 
         //move the track in the x direction
-        offset = new Vector2(0, Time.time * vel);
-        GetComponent<Renderer>().material.mainTextureOffset = offset;
+        float offset = Time.time * vel;
+        Debug.Log(string.Format("offset: {0}", offset));
+        GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, -offset);
     }
 
     // For Testing
     private void ModifySpeed()
     {
-        speed = Random.Range(0, 2);
-        Debug.Log(string.Format("New Speed: {0}", speed));
-        throttle = trackController.commandVelCallback(speed);
+        speedGoal = Random.Range(0, 2);
+        //Debug.Log(string.Format("New Track Speed: {0}", speed));
+        throttle = trackController.commandVelCallback(speedGoal);
     }
 }

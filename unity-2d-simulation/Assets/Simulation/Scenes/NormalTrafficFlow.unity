@@ -192,7 +192,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 161498230}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: -10}
+  m_LocalPosition: {x: 8.6, y: 4.7, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -299,7 +299,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1012582077}
   m_LocalRotation: {x: 0, y: -0, z: 0.7071068, w: -0.7071068}
-  m_LocalPosition: {x: -10.46, y: 0.28, z: -0.12890625}
+  m_LocalPosition: {x: -3.4, y: 6.1, z: -0.12890625}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -331,7 +331,7 @@ GameObject:
   - component: {fileID: 1060084728}
   - component: {fileID: 1060084729}
   m_Layer: 0
-  m_Name: ego
+  m_Name: EgoCar
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -389,13 +389,13 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1060084725}
-  m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 0, y: -0, z: 0.7071068, w: -0.7071068}
+  m_LocalPosition: {x: 4.5, y: 5.5, z: 0}
   m_LocalScale: {x: 1.0649008, y: 0.89128935, z: 8.087318}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 270}
 --- !u!114 &1060084728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -421,7 +421,7 @@ Rigidbody2D:
   m_Mass: 1
   m_LinearDrag: 0
   m_AngularDrag: 0.05
-  m_GravityScale: 1
+  m_GravityScale: 0
   m_Material: {fileID: 0}
   m_Interpolate: 0
   m_SleepingMode: 1
@@ -440,7 +440,7 @@ GameObject:
   - component: {fileID: 1314292292}
   - component: {fileID: 1314292296}
   m_Layer: 0
-  m_Name: track
+  m_Name: Track
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -475,7 +475,7 @@ MeshRenderer:
   m_ReflectionProbeUsage: 1
   m_RenderingLayerMask: 4294967295
   m_Materials:
-  - {fileID: 2100000, guid: 0882f517dff395344a11b93dc93c5fc7, type: 2}
+  - {fileID: 2100000, guid: 7df98f1f43e39f24780533b590be2b99, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -509,7 +509,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1314292291}
   m_LocalRotation: {x: 0, y: 0, z: 0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0.01, y: -0.05, z: 0}
+  m_LocalPosition: {x: 8.6, y: 4.7, z: 0}
   m_LocalScale: {x: 9, y: 17, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -526,4 +526,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 984e94d82698346a9a0f49bd06c19ea2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 1
+  vel: 0

@@ -15,15 +15,10 @@ public class DiscreteSystem {
 
     public DiscreteSystem(float[] inCoeffs, float[] outCoeffs, float initialOutput)
     {
-        Debug.Log((string.Join(",", inCoeffs)));
-        Debug.Log((string.Join(",", outCoeffs)));
-
         this.inCoeffs = new float[inCoeffs.Length];
         Array.Copy(inCoeffs, this.inCoeffs, inCoeffs.Length);
-        Debug.Log("copied inCoeffs");
         this.outCoeffs = new float[outCoeffs.Length];
         Array.Copy(outCoeffs, this.outCoeffs, outCoeffs.Length);
-        Debug.Log("copied outCoeffs");
 
         this.initialOutput = initialOutput;
         eqn = new DifferenceEquation(inCoeffs, outCoeffs);

@@ -50,10 +50,10 @@ public class LateralController
     protected float getYaw(Quaternion rotation)
     {
         float yaw = Mathf.Asin(2 * rotation.x * rotation.y + 2 * rotation.z * rotation.w);
-        Debug.Log(string.Format("x: {0}, y: {1}, z: {2}, w: {3}", rotation.x, rotation.y, rotation.z, rotation.w));
-        Debug.Log(string.Format("Yaw: {0}", yaw));
+        ////Debug.Log(string.Format("x: {0}, y: {1}, z: {2}, w: {3}", rotation.x, rotation.y, rotation.z, rotation.w));
+        //Debug.Log(string.Format("Yaw: {0}", yaw));
 
-        Debug.Log(string.Format("Test: {0}", Mathf.Asin(2 * 0.5f * 0.5f)));
+       // Debug.Log(string.Format("Test: {0}", Mathf.Asin(2 * 0.5f * 0.5f)));
         return yaw;
     }
 }

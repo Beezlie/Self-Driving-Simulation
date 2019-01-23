@@ -33,7 +33,7 @@ public class TrackController {
     public float velCallback(float trackVel)
     {
         float throt;
-        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), trackVel, Time.deltaTime, true);
+        float c = controller.commandStep(calculateFeedforward(controller.getGoal()), trackVel, 1 / Constants.targetHz, true);
         throt = c;
         return throt;
     }
