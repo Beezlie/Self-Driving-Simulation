@@ -61,7 +61,7 @@ namespace FixedPathAlgorithms
             if (oneReedsSheppPath != null && oneReedsSheppPath.pathCoordinates.Count > 0)
             {
                 //Display the path with line renderers
-                DisplayPath(oneReedsSheppPath.pathCoordinates);
+                //DisplayPath(oneReedsSheppPath.pathCoordinates);
             }
         }
 

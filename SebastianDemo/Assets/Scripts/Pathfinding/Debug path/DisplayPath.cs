@@ -31,7 +31,7 @@ namespace PathfindingForCars
         private List<Node> smoothPath;
 
         //Should we display the search tree
-        private bool shouldDisplaySearchTree = true;
+        private bool shouldDisplaySearchTree = false;
 
 
 

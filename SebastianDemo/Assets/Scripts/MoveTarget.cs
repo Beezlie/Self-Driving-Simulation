@@ -28,10 +28,10 @@ namespace PathfindingForCars
         void Update()
         {
             //Move target all the time
-            MoveTargeToMousePos();
+            //MoveTargeToMousePos();
 
             //Rotate the target around y
-            RotateTarget();
+            //RotateTarget();
         }
 
 
