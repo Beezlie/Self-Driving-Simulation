@@ -1,19 +1,12 @@
 ﻿<Properties StartupConfiguration="{CAACC462-5A19-75A1-70E0-8EBDD111AEAC}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Pathfinding/Debug path/DisplayPath.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Pathfinding/Hybrid A star/HybridAStarAngle.cs">
     <Files>
-      <File FileName="Assets/Scripts/Car/CarData.cs" Line="16" Column="28" />
-      <File FileName="Assets/Scripts/Car/CarController.cs" Line="168" Column="15" />
-      <File FileName="Assets/Scripts/Car/FollowPath.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Pathfinding/PathfindingController.cs" Line="14" Column="77" />
-      <File FileName="Assets/Scripts/Obstacles/ObstacleData.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Obstacles/ObstacleDebug.cs" Line="109" Column="61" />
-      <File FileName="Assets/Scripts/Obstacles/ObstaclesController.cs" Line="16" Column="9" />
-      <File FileName="Assets/Scripts/Car/EgoCarInterface.cs" Line="1" Column="1" />
       <File FileName="Assets/Scripts/MoveTarget.cs" Line="34" Column="15" />
-      <File FileName="Assets/Scripts/Pathfinding/Debug path/DisplayReedsShepp.cs" Line="64" Column="19" />
-      <File FileName="Assets/Scripts/Pathfinding/Fixed paths/ReedsShepp/GenerateReedsShepp.cs" Line="32" Column="9" />
-      <File FileName="Assets/Scripts/Pathfinding/Debug path/DisplayPath.cs" Line="5" Column="1" />
+      <File FileName="Assets/Scripts/SimController.cs" Line="36" Column="23" />
+      <File FileName="Assets/Scripts/Pathfinding/Hybrid A star/HybridAStarAngle.cs" Line="329" Column="44" />
+      <File FileName="Assets/Scripts/Pathfinding/PathfindingController.cs" Line="230" Column="19" />
+      <File FileName="Assets/Scripts/Obstacles/ObstaclesDetection.cs" Line="35" Column="28" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />

@@ -73,6 +73,7 @@ namespace PathfindingForCars
 
         void Update()
         {
+            
             //Check if the target position has changed
             if (targetCarTrans.position != egoCarInterface.GetTargetPosition())
             {
@@ -80,8 +81,12 @@ namespace PathfindingForCars
                 targetCarTrans.rotation = egoCarInterface.GetCurrentTransform().rotation;       //temporary
                 float heading = egoCarInterface.GetCurrentHeading();                            //temporary
 
+                // temporary testing to see where a new CarData can be created only from position and rotation 
+                // Tried similar instantiation as GenerateHybridAStarPath() from HybridAStarAngle.cs
+                CarData testTargetCarData = targetCarTrans.GetComponent<CarData>();
+
                 //Check if the target car has a valid position
-                if (HasTargetCarValidPosition(targetCarTrans.position, heading, egoCarData))
+                if (HasTargetCarValidPosition(targetCarTrans.position, heading, testTargetCarData))
                 {
                     //Stop the car
                     SimController.current.StopCar();
@@ -115,7 +120,7 @@ namespace PathfindingForCars
                 targetMarkerTrans.position = targetCarTrans.position;
                 targetMarkerTrans.rotation = targetCarTrans.rotation;
 
-                targetMarkerTrans.gameObject.SetActive(true);
+                targetMarkerTrans.gameObject.SetActive(false);
             }
         }
 
