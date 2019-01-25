@@ -16,7 +16,8 @@ namespace PathfindingForCars
 
         //Map data
         //The size of all cells in [m]
-        public static int mapWidth = 160;
+        public static int mapLength = 200;
+        public static int mapWidth = 50;
         //The size of one cell in [m]
         public static float cellWidth = 1f;
 
@@ -240,7 +241,7 @@ namespace PathfindingForCars
         {
             bool isWithIn = false;
 
-            if (cellPos.x >= 0 && cellPos.x < mapWidth && cellPos.z >= 0 && cellPos.z < mapWidth)
+            if (cellPos.x >= 0 && cellPos.x < mapLength && cellPos.z >= 0 && cellPos.z < mapWidth)
             {
                 isWithIn = true;
             }
@@ -255,7 +256,7 @@ namespace PathfindingForCars
         {
             bool isWithIn = false;
 
-            if (worldPos.x > 0f && worldPos.x < mapWidth && worldPos.z > 0f && worldPos.z < mapWidth)
+            if (worldPos.x > 0f && worldPos.x < mapLength && worldPos.z > 0f && worldPos.z < mapWidth)
             {
                 isWithIn = true;
             }

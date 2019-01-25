@@ -23,11 +23,12 @@ namespace PathfindingForCars
         //Init
         public HeuristicsController()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
-            euclideanHeuristics = new float[mapWidth, mapWidth];
-            heuristics = new float[mapWidth, mapWidth];
-            flowFieldHeuristics = new float[mapWidth, mapWidth];
+            euclideanHeuristics = new float[mapLength, mapWidth];
+            heuristics = new float[mapLength, mapWidth];
+            flowFieldHeuristics = new float[mapLength, mapWidth];
 
             //The report is also using the reeds shepp paths has heuristic and is pre-calculating these
             //The report is also pre-calculating the euclidean distance
@@ -38,10 +39,11 @@ namespace PathfindingForCars
         //Get the final heuristics from all individual heuristics
         public void GenerateFinalHeuristics()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //Heuristic is the max of the different heuristics
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -59,10 +61,11 @@ namespace PathfindingForCars
         {
             Vector2 targetPos2D = new Vector2((float)targetCellPos.x, (float)targetCellPos.z);
 
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //Populate the heuristics array
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -89,12 +92,13 @@ namespace PathfindingForCars
         {
             FlowField flowField = new FlowField();
 
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //The final flow field will be stored here, so init it
-            FlowFieldNode[,] gridArray = new FlowFieldNode[mapWidth, mapWidth];
+            FlowFieldNode[,] gridArray = new FlowFieldNode[mapLength, mapWidth];
 
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -117,7 +121,7 @@ namespace PathfindingForCars
 
 
             //Add the values to the other array
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {

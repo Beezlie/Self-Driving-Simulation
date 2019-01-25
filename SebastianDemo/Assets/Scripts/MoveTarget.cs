@@ -50,9 +50,10 @@ namespace PathfindingForCars
                 Vector3 hitCoordinate = ray.GetPoint(rayDistance);
 
                 //If we are within the grid, move the target to the new position
+                int mapLength = PathfindingController.mapLength;
                 int mapWidth = PathfindingController.mapWidth;
 
-                if (hitCoordinate.x > 0f && hitCoordinate.x < mapWidth && hitCoordinate.z > 0f && hitCoordinate.z < mapWidth)
+                if (hitCoordinate.x > 0f && hitCoordinate.x < mapLength && hitCoordinate.z > 0f && hitCoordinate.z < mapWidth)
                 {
                     transform.position = hitCoordinate;
                 }

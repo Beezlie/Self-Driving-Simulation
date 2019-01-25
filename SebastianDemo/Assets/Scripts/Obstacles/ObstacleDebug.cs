@@ -20,11 +20,12 @@ namespace PathfindingForCars
         private void Start()
         {
             //Resize the quads to fit the grid
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
-            Vector3 centerPos = new Vector3(mapWidth * 0.5f, quadHeight, mapWidth * 0.5f);
+            Vector3 centerPos = new Vector3(mapLength * 0.5f, quadHeight, mapWidth * 0.5f);
 
-            Vector3 scale = new Vector3(mapWidth, mapWidth, 1f);
+            Vector3 scale = new Vector3(mapLength, mapWidth, 1f);
 
             //Add the data to the quads
             quadPotentialField.position = centerPos;
@@ -45,6 +46,7 @@ namespace PathfindingForCars
         //Display which cells intersect with an obstacle
         public void DisplayCellObstacleIntersection()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             bool[,] obstaclesArray = ObstaclesController.isObstacleInCell;
@@ -54,9 +56,9 @@ namespace PathfindingForCars
 
             //Add colors to the texture
             //More efficient to generate the colors once and then add the array to the texture
-            Color[] colors = new Color[mapWidth * mapWidth];
+            Color[] colors = new Color[mapLength * mapWidth];
 
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -85,10 +87,11 @@ namespace PathfindingForCars
         //Create a texture on which we will display the information
         private Texture2D GenerateNewDebugTexture()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //Create a texture on which we will display the information
-            Texture2D debugTexture = new Texture2D(mapWidth, mapWidth);
+            Texture2D debugTexture = new Texture2D(mapLength, mapWidth);
 
             //Change texture settings to make it look better
             debugTexture.filterMode = FilterMode.Point;
@@ -103,6 +106,7 @@ namespace PathfindingForCars
         //Display the flow field showing the distance to the closest obstacle
         public void DisplayObstacleFlowField()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             bool[,] obstaclesArray = ObstaclesController.isObstacleInCell;
@@ -113,7 +117,7 @@ namespace PathfindingForCars
             //Debug flow field by changing the color of the cells 
             //To display the grid with a grayscale, we need the max distance to the node furthest away
             int maxDistance = 0;
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -131,9 +135,9 @@ namespace PathfindingForCars
 
             //Generate the colors
             //More efficient to generate the colors once and then add the array to the texture
-            Color[] colors = new Color[mapWidth * mapWidth];
+            Color[] colors = new Color[mapLength * mapWidth];
 
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -178,7 +182,7 @@ namespace PathfindingForCars
 
 
 
-            //for (int x = 0; x < mapWidth; x++)
+            //for (int x = 0; x < mapLength; x++)
             //{
             //    for (int z = 0; z < mapWidth; z++)
             //    {

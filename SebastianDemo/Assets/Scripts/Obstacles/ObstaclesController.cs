@@ -28,16 +28,17 @@ namespace PathfindingForCars
         public void InitObstacles()
         {
             //Init the arrays
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
-            isObstacleInCell = new bool[mapWidth, mapWidth];
+            isObstacleInCell = new bool[mapLength, mapWidth];
 
-            obstaclesInCell = new List<ObstacleData>[mapWidth, mapWidth];
+            obstaclesInCell = new List<ObstacleData>[mapLength, mapWidth];
 
-            distanceToClosestObstacle = new int[mapWidth, mapWidth];
+            distanceToClosestObstacle = new int[mapLength, mapWidth];
 
             //Add init values to the obstacles array
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -127,15 +128,16 @@ namespace PathfindingForCars
         //Generate obstacles and return the center coordinates of them in a list 
         public void AddObstacles()
         {
+            float mapLength = (float)PathfindingController.mapLength;
             float mapWidth = (float)PathfindingController.mapWidth;
 
             //How many cubes are we going to add?
-            int numberOfObstacles = 70;
+            int numberOfObstacles = 10;
 
             for (int i = 0; i < numberOfObstacles; i++)
             {
                 //Generate random coordinates in the map
-                float randomX = Random.Range(1f, mapWidth - 1f);
+                float randomX = Random.Range(1f, mapLength - 1f);
                 float randomZ = Random.Range(1f, mapWidth - 1f);
 
                 //Car starts at 30, 30, so avoid that area
@@ -182,12 +184,13 @@ namespace PathfindingForCars
         {
             FlowField flowField = new FlowField();
 
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //The flow field will be stored in this array
-            FlowFieldNode[,] gridArray = new FlowFieldNode[mapWidth, mapWidth];
+            FlowFieldNode[,] gridArray = new FlowFieldNode[mapLength, mapWidth];
 
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -204,7 +207,7 @@ namespace PathfindingForCars
             //A flow field can have several start nodes
             List<FlowFieldNode> startNodes = new List<FlowFieldNode>();
 
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -221,7 +224,7 @@ namespace PathfindingForCars
 
 
             //Add the values to the other array
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
@@ -235,6 +238,7 @@ namespace PathfindingForCars
         //Creates a square consisting of several cubes
         void CreateSquare(int squareSize, Vector3 center)
         {
+            float mapLength = (float)PathfindingController.mapLength;
             float mapWidth = (float)PathfindingController.mapWidth;
 
             float startX = center.x;
@@ -247,7 +251,7 @@ namespace PathfindingForCars
                     Vector3 pos = new Vector3(startX + (1f * x), 0.5f, startZ + (1f * z));
 
                     //If we are within the map
-                    if (pos.x > 0.5f && pos.x < mapWidth - 0.5f && pos.z > 0.5f && pos.z < mapWidth - 0.5f)
+                    if (pos.x > 0.5f && pos.x < mapLength - 0.5f && pos.z > 0.5f && pos.z < mapWidth - 0.5f)
                     {
                         //If we are not hitting the car
                         if ((pos.x < 25f || pos.x > 35f) && (pos.z < 25f || pos.z > 35f))
@@ -264,6 +268,7 @@ namespace PathfindingForCars
         //Add several cubes in a direction
         void AddObstacles(Vector3 center, int amount, float deltaX, float deltaZ)
         {
+            float mapLength = (float)PathfindingController.mapLength;
             float mapWidth = (float)PathfindingController.mapWidth;
 
             float startX = center.x;
@@ -277,7 +282,7 @@ namespace PathfindingForCars
                 Vector3 pos = new Vector3(startX, 0.5f, startZ);
 
                 //If we are within the map
-                if (startX > 0.5f && startX < mapWidth - 0.5f && startZ > 0.5f && startZ < mapWidth - 0.5f)
+                if (startX > 0.5f && startX < mapLength - 0.5f && startZ > 0.5f && startZ < mapWidth - 0.5f)
                 {
                     //If we are not hitting the car
                     if ((startX < 25f || startX > 35f) && (startZ < 25f || startZ > 35f))

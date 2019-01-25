@@ -54,12 +54,13 @@ namespace PathfindingForCars
 
         public HybridAStarAngle()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //Init the arrays
-            lowestCostCells = new Dictionary<int, float>[mapWidth, mapWidth];
+            lowestCostCells = new Dictionary<int, float>[mapLength, mapWidth];
 
-            closedCells = new Dictionary<int, bool>[mapWidth, mapWidth];
+            closedCells = new Dictionary<int, bool>[mapLength, mapWidth];
 
             //Init steering angles
             CalculateSteeringAngles();
@@ -89,10 +90,11 @@ namespace PathfindingForCars
         //What we need to reset before generating a new path
         void Reset()
         {
+            int mapLength = PathfindingController.mapLength;
             int mapWidth = PathfindingController.mapWidth;
 
             //Reset the arrays
-            for (int x = 0; x < mapWidth; x++)
+            for (int x = 0; x < mapLength; x++)
             {
                 for (int z = 0; z < mapWidth; z++)
                 {

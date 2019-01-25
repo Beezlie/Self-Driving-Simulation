@@ -28,16 +28,17 @@ namespace PathfindingForCars
         private void Start()
         {
             int width = PathfindingController.mapWidth;
+            int length = PathfindingController.mapLength;
 
             //Add all square meshes for debugging
-            squaresArray = new GameObject[width, width];
+            squaresArray = new GameObject[length, width];
 
-            meshRenderersArray = new MeshRenderer[width, width];
+            meshRenderersArray = new MeshRenderer[length, width];
 
             float halfCellWidth = PathfindingController.cellWidth / 2f;
 
             //Fill the array with quads for debugging
-            for (int x = 0; x < width; x++)
+            for (int x = 0; x < length; x++)
             {
                 for (int z = 0; z < width; z++)
                 {
@@ -71,7 +72,8 @@ namespace PathfindingForCars
         {
             if (shouldDisplayGrid)
             {
-                DisplayGridWithLines();
+                // TODO: Refactor to include track length / width before using
+                //DisplayGridWithLines();
             }
         }
 
