@@ -17,7 +17,7 @@ namespace PathfindingForCars
             Debug.Log("Length 1: " + gridArray.GetLength(1));
             for (int x = 0; x < gridArray.GetLength(0); x++)
             {
-                for (int z = 0; z < gridArray.GetLength(0); z++)
+                for (int z = 0; z < gridArray.GetLength(1); z++)
                 {
                     gridArray[x, z].ResetNodeFlowField();
                 }
@@ -143,7 +143,7 @@ namespace PathfindingForCars
                 IntVector2 cellPos = new IntVector2(node.cellPos.x + delta[i].x, node.cellPos.z + delta[i].z);
 
                 //Is this cell position within the grid?
-                if (IsCellPosWithinGrid(cellPos, gridArray.GetLength(0)))
+                if (IsCellPosWithinGrid(cellPos, gridArray))
                 {
                     ////Make sure we are not crossing obstacles diagonally
                     //bool topNode = gridArray[node.cellPos.x + 0, node.cellPos.z + 1].isWalkable;
@@ -220,7 +220,7 @@ namespace PathfindingForCars
                 IntVector2 cellPos = new IntVector2(node.cellPos.x + delta[i].x, node.cellPos.z + delta[i].z);
 
                 //Is this cell position within the grid?
-                if (IsCellPosWithinGrid(cellPos, gridArray.GetLength(0)))
+                if (IsCellPosWithinGrid(cellPos, gridArray))
                 {
                     neighboringNodes.Add(gridArray[cellPos.x, cellPos.z]);
                 }          
@@ -232,11 +232,13 @@ namespace PathfindingForCars
 
 
         //Is a cell position within the grid?
-        private bool IsCellPosWithinGrid(IntVector2 cellPos, int gridSize)
+        private bool IsCellPosWithinGrid(IntVector2 cellPos, FlowFieldNode[,] gridArray)
         {
             bool isWithin = false;
+            int gridLength = gridArray.GetLength(0);
+            int gridWidth = gridArray.GetLength(1);
 
-            if (cellPos.x >= 0 && cellPos.x < gridSize && cellPos.z >= 0 && cellPos.z < gridSize)
+            if (cellPos.x >= 0 && cellPos.x < gridLength && cellPos.z >= 0 && cellPos.z < gridWidth)
             {
                 isWithin = true;
             }
