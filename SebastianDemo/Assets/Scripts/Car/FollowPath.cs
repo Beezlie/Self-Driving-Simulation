@@ -77,7 +77,7 @@ namespace PathfindingForCars
             }
 
             //Change the car's speed to slow down when curvy path or close to end of path
-            ChangeSpeed();
+            //ChangeSpeed();
         }
 
 

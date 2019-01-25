@@ -30,10 +30,17 @@ namespace PathfindingForCars
         private HeuristicsController heuristicsController;
         private SmoothPathController smoothPathController;
 
-
+        //Reference to main Ego vehicle
+        private GameObject egoCar;
+        private EgoCarInterface egoCarInterface;
+        private CarData egoCarData;
 
         void Awake()
         {
+            egoCar = GameObject.Find("EgoCar");
+            egoCarInterface = egoCar.GetComponent<EgoCarInterface>();
+            egoCarData = egoCar.GetComponent<CarData>();
+
             heuristicsController = new HeuristicsController();
 
             smoothPathController = new SmoothPathController();
@@ -50,9 +57,6 @@ namespace PathfindingForCars
             //finished and mess things up
             GetComponent<ObstaclesController>().InitObstacles();
 
-            //Hide the marker showing where the car should drive
-            targetMarkerTrans.gameObject.SetActive(false);
-
             hybridAStar = new HybridAStar();
             hybridAStarAngle = new HybridAStarAngle();
 
@@ -60,17 +64,24 @@ namespace PathfindingForCars
             //Create the textures showing various stuff
             debugController.DisplayCellObstacleIntersection();
             debugController.DisplayObstacleFlowField();
+
+            targetCarTrans.position = egoCarData.GetRearWheelPos();
+            targetCarTrans.rotation = egoCarData.GetCarTransform().rotation;
         }
 
 
 
         void Update()
         {
-            //Try to find a path if we press left mouse
-            if (Input.GetMouseButtonDown(0))
+            //Check if the target position has changed
+            if (targetCarTrans.position != egoCarInterface.GetTargetPosition())
             {
+                targetCarTrans.position = egoCarInterface.GetTargetPosition();
+                targetCarTrans.rotation = egoCarInterface.GetCurrentTransform().rotation;       //temporary
+                float heading = egoCarInterface.GetCurrentHeading();                            //temporary
+
                 //Check if the target car has a valid position
-                if (HasTargetCarValidPosition(targetCarTrans.GetComponent<CarData>()))
+                if (HasTargetCarValidPosition(targetCarTrans.position, heading, egoCarData))
                 {
                     //Stop the car
                     SimController.current.StopCar();
@@ -93,8 +104,9 @@ namespace PathfindingForCars
             }
 
             //Now we need to check again if the target position is possible
-            //because we might have moved the target while the car was braking        
-            if (HasTargetCarValidPosition(targetCarTrans.GetComponent<CarData>()))
+            //because we might have moved the target while the car was braking   
+            float heading = egoCarInterface.GetCurrentHeading();                            //temporary
+            if (HasTargetCarValidPosition(targetCarTrans.position, heading, egoCarData))
             {
                 //The car has stopped and the target should be possible, so generate a path
                 StartCoroutine(GeneratePath());
@@ -205,15 +217,15 @@ namespace PathfindingForCars
 
 
         //Check if the target car has a valid position
-        private bool HasTargetCarValidPosition(CarData carData)
+        private bool HasTargetCarValidPosition(Vector3 targetPos, float heading, CarData carData)
         {
             bool hasValidPosition = false;
 
-            Vector3 carPos = carData.GetRearWheelPos();
+            //Vector3 carPos = carData.GetRearWheelPos();
 
-            float targetCarHeading = carData.GetHeading() * Mathf.Deg2Rad;
+            float targetCarHeading = heading * Mathf.Deg2Rad;
 
-            if (!ObstaclesDetection.HasCarInvalidPosition(carPos, targetCarHeading, carData))
+            if (!ObstaclesDetection.HasCarInvalidPosition(targetPos, targetCarHeading, carData))
             {
                 hasValidPosition = true;
             }
