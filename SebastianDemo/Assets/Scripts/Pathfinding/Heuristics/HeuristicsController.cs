@@ -69,8 +69,8 @@ namespace PathfindingForCars
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
-                    if (!ObstaclesController.isObstacleInCell[x, z])
-                    {
+                    //if (!ObstaclesController.isObstacleInCell[x, z])          (MATT)
+                    //{
                         Vector2 currentPos2D = new Vector2((float)x, (float)z);
 
                         //The distance from the center of the square to the target
@@ -78,7 +78,7 @@ namespace PathfindingForCars
                         float heuristic = (targetPos2D - currentPos2D).magnitude;
 
                         euclideanHeuristics[x, z] = heuristic;
-                    }
+                    //}
                 }
             }
         }
@@ -102,7 +102,8 @@ namespace PathfindingForCars
             {
                 for (int z = 0; z < mapWidth; z++)
                 {
-                    bool isWalkable = ObstaclesController.isObstacleInCell[x, z] ? false : true;
+                    //bool isWalkable = ObstaclesController.isObstacleInCell[x, z] ? false : true;      (MATT)
+                    bool isWalkable = true;
 
                     FlowFieldNode node = new FlowFieldNode(isWalkable);
 

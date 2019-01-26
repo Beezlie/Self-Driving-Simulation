@@ -70,6 +70,7 @@ namespace PathfindingForCars
 
                     tmp += beta * (tempPath[i_plus_one] + tempPath[i_minus_one] - 2f * tempPath[i]);
 
+                    /*      (MATT)
                     //Maximize the distance to the obstacles
                     if (optimizeObstacles)
                     {
@@ -97,6 +98,7 @@ namespace PathfindingForCars
                             tmp += gammaMod * (tempPath[i] - closestObstaclePos);
                         }
                     }
+                    */
 
                     totalChange += Mathf.Abs((tmp - tempPath[i]).magnitude);
 

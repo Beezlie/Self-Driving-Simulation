@@ -35,6 +35,8 @@ namespace PathfindingForCars
         private EgoCarInterface egoCarInterface;
         private CarData egoCarData;
 
+        CarData targetCarData;
+
         void Awake()
         {
             egoCar = GameObject.Find("EgoCar");
@@ -67,13 +69,17 @@ namespace PathfindingForCars
 
             targetCarTrans.position = egoCarData.GetRearWheelPos();
             targetCarTrans.rotation = egoCarData.GetCarTransform().rotation;
+            targetCarData = targetCarTrans.GetComponent<CarData>();
+
+            Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
+            Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
         }
 
 
 
         void Update()
         {
-            
+
             //Check if the target position has changed
             if (targetCarTrans.position != egoCarInterface.GetTargetPosition())
             {
@@ -83,10 +89,11 @@ namespace PathfindingForCars
 
                 // temporary testing to see where a new CarData can be created only from position and rotation 
                 // Tried similar instantiation as GenerateHybridAStarPath() from HybridAStarAngle.cs
-                CarData testTargetCarData = targetCarTrans.GetComponent<CarData>();
+                Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
+                Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
 
                 //Check if the target car has a valid position
-                if (HasTargetCarValidPosition(targetCarTrans.position, heading, testTargetCarData))
+                if (HasTargetCarValidPosition(targetCarTrans.position, heading, targetCarData))
                 {
                     //Stop the car
                     SimController.current.StopCar();
@@ -225,19 +232,15 @@ namespace PathfindingForCars
         private bool HasTargetCarValidPosition(Vector3 targetPos, float heading, CarData carData)
         {
             bool hasValidPosition = false;
-
-            //Vector3 carPos = carData.GetRearWheelPos();
-
             float targetCarHeading = heading * Mathf.Deg2Rad;
 
-            if (!ObstaclesDetection.HasCarInvalidPosition(targetPos, targetCarHeading, carData))
+            if (ObstaclesDetection.TargetPositionWithinTrack(targetPos, targetCarHeading, carData)) //(MATT)
             {
                 hasValidPosition = true;
             }
 
             return hasValidPosition;
         }
-
 
 
         //Convert from world position to a cell pos
@@ -250,7 +253,6 @@ namespace PathfindingForCars
 
             return arrayPos;
         }
-
 
 
         //Is a cell position within the grid?
@@ -267,7 +269,6 @@ namespace PathfindingForCars
         }
 
 
-
         //Is a world position within the grid?
         public static bool IsPositionWithinGrid(Vector3 worldPos)
         {
@@ -280,7 +281,6 @@ namespace PathfindingForCars
 
             return isWithIn;
         }
-
 
 
         //Help function to display how long something took

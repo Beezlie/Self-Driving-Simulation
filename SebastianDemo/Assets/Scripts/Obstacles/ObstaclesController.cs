@@ -132,7 +132,7 @@ namespace PathfindingForCars
             float mapWidth = (float)PathfindingController.mapWidth;
 
             //How many cubes are we going to add?
-            int numberOfObstacles = 10;
+            int numberOfObstacles = 5;
 
             for (int i = 0; i < numberOfObstacles; i++)
             {

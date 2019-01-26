@@ -109,6 +109,44 @@ namespace PathfindingForCars
         }
 
 
+        //Check if the car outside of map (MATT)
+        public static bool TargetPositionWithinTrack(Vector3 carRearWheelPos, float heading, CarData carData)
+        {
+            bool withinTrack = true;
+
+            //Make the car bigger than it is to be on the safe side
+            float marginOfSafety = 0.5f;
+
+            float carLength = carData.GetLength() + marginOfSafety;
+            float carWidth = carData.GetWidth() + marginOfSafety;
+
+
+            //Find the center pos of the car (carPos is at the rearWheels)
+            float distCenterToRearWheels = carData.GetDistanceToRearWheels();
+
+            float xCenter = carRearWheelPos.x + distCenterToRearWheels * Mathf.Sin(heading);
+            float zCenter = carRearWheelPos.z + distCenterToRearWheels * Mathf.Cos(heading);
+
+            Vector3 carPos = new Vector3(xCenter, carRearWheelPos.y, zCenter);
+
+            //Find all corners of the car
+            Rectangle carCornerPos = SkeletonCar.GetCornerPositions(carPos, heading, carWidth, carLength);
+
+            //Detect if any of the corners is outside of the map
+            if (
+                !PathfindingController.IsPositionWithinGrid(carCornerPos.FL) ||
+                !PathfindingController.IsPositionWithinGrid(carCornerPos.FR) ||
+                !PathfindingController.IsPositionWithinGrid(carCornerPos.BL) ||
+                !PathfindingController.IsPositionWithinGrid(carCornerPos.BR))
+            {
+                //At least one of the corners is outside of the map
+                withinTrack = false;
+            }
+
+            return withinTrack;
+        }
+
+
 
         //Use the car's corners and then rectangle-rectangle-intersection with the obstacles to check if the car is intersecting with an obstacle
         private static bool ObstacleDetectionCorners(Vector3 carPos, Rectangle carCornerPos)

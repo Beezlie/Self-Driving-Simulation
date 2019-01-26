@@ -19,6 +19,13 @@ namespace PathfindingForCars
         {
             groundPlane = new Plane(Vector3.up, Vector3.zero);
 
+            // Do not render target car
+            Renderer[] rs = GetComponentsInChildren<Renderer>();
+            foreach (Renderer r in rs)
+            {
+                r.enabled = false;
+            }
+
             //Faster to cache the camera than using camera.main each update
             thisCamera = Camera.main;
         }

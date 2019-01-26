@@ -334,7 +334,8 @@ namespace PathfindingForCars
                     IntVector2 cellPos = PathfindingController.ConvertCoordinateToCellPos(newCarPos);
 
                     //Detect if the car is colliding with obstacle or is outside of map
-                    if (ObstaclesDetection.HasCarInvalidPosition(newCarPos, newHeading, carData))
+                    if (!ObstaclesDetection.TargetPositionWithinTrack(newCarPos, newHeading, carData))
+                    //if (ObstaclesDetection.HasCarInvalidPosition(newCarPos, newHeading, carData)) (MATT)
                     {
                         continue;
                     }
@@ -363,10 +364,12 @@ namespace PathfindingForCars
 
                         //Add a cost if we are close to an obstacle, its better to drive around them than close to them
                         //We can use the flow map to check this
+                        /*  (MATT)
                         if (ObstaclesController.distanceToClosestObstacle[cellPos.x, cellPos.z] < 6)
                         {
                             cost += obstacleCost;
                         }
+                        */
 
                         //Add cost for reversing
                         if (driveDistance < 0f)
@@ -512,7 +515,9 @@ namespace PathfindingForCars
                 goalHeading);
 
             //If we have a path and it is not blocked by obstacle
-            if (shortestPath != null && ObstaclesDetection.IsFixedPathDrivable(shortestPath, carData))
+            //if (shortestPath != null && ObstaclesDetection.IsFixedPathDrivable(shortestPath, carData)) (MATT)
+            if (shortestPath != null)
+
             {
                 return shortestPath;
             }
