@@ -123,7 +123,7 @@ namespace PathfindingForCars
         public void GenerateHybridAStarPath(Transform targetTrans, List<Node> finalPath, List<Node> allExpandedNodes)
         {
             //The data belonging to the car we want to reach
-            CarData targetCarData = targetTrans.GetComponent<CarData>();
+            CompanionCarData targetCarData = targetTrans.GetComponent<CompanionCarData>();
             //Get the data belonging to the current active car
             this.carData = SimController.current.GetActiveCarData();
             //Each car may have a different turning radius
@@ -142,7 +142,7 @@ namespace PathfindingForCars
 
 
         //Run the main loop
-        private void RunHybridAStar(List<Node> allExpandedNodes, CarData targetCarData)
+        private void RunHybridAStar(List<Node> allExpandedNodes, CompanionCarData targetCarData)
         {
             //Why rear wheel? Because we need that position when simulating the "skeleton" car
             //and then it's easier if everything is done from the rear wheel positions
@@ -334,8 +334,9 @@ namespace PathfindingForCars
                     IntVector2 cellPos = PathfindingController.ConvertCoordinateToCellPos(newCarPos);
 
                     //Detect if the car is colliding with obstacle or is outside of map
-                    if (!ObstaclesDetection.TargetPositionWithinTrack(newCarPos, newHeading, carData))
-                    //if (ObstaclesDetection.HasCarInvalidPosition(newCarPos, newHeading, carData)) (MATT)
+                    //if (!ObstaclesDetection.TargetPositionWithinTrack(newCarPos, newHeading, carData)) (DEVANSH) 
+                    // Use HybridAStar algorithm for Companion Cars: thus reverting back to original implementation
+                    if (ObstaclesDetection.HasCarInvalidPosition(newCarPos, newHeading, carData)) //(MATT)
                     {
                         continue;
                     }
@@ -364,12 +365,12 @@ namespace PathfindingForCars
 
                         //Add a cost if we are close to an obstacle, its better to drive around them than close to them
                         //We can use the flow map to check this
-                        /*  (MATT)
-                        if (ObstaclesController.distanceToClosestObstacle[cellPos.x, cellPos.z] < 6)
+                        //  (MATT: commented code block below) - (DEVANSH: uncommented and reduced distance from 6 to 3)
+                        if (ObstaclesController.distanceToClosestObstacle[cellPos.x, cellPos.z] < 3)
                         {
                             cost += obstacleCost;
                         }
-                        */
+
 
                         //Add cost for reversing
                         if (driveDistance < 0f)
@@ -515,8 +516,9 @@ namespace PathfindingForCars
                 goalHeading);
 
             //If we have a path and it is not blocked by obstacle
-            //if (shortestPath != null && ObstaclesDetection.IsFixedPathDrivable(shortestPath, carData)) (MATT)
-            if (shortestPath != null)
+            if (shortestPath != null && ObstaclesDetection.IsFixedPathDrivable(shortestPath, carData)) 
+                //(MATT: commented line above) -> (DEVANSH: uncommented since algo used for companion car) 
+            //if (shortestPath != null)
 
             {
                 return shortestPath;

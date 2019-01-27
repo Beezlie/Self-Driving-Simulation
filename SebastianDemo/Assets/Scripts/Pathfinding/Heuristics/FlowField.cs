@@ -13,8 +13,6 @@ namespace PathfindingForCars
             //Reset such as costs and parent nodes, etc
             //Will set set costs to max value
 
-            Debug.Log("Length 0: " + gridArray.GetLength(0));
-            Debug.Log("Length 1: " + gridArray.GetLength(1));
             for (int x = 0; x < gridArray.GetLength(0); x++)
             {
                 for (int z = 0; z < gridArray.GetLength(1); z++)

@@ -4,14 +4,14 @@ using UnityEngine;
 
 namespace PathfindingForCars
 {
-    public class EgoCarInterface : MonoBehaviour
+    public class CompanionCarInterface : MonoBehaviour
     {
         private Vector3 targetPosition;
         private float targetHeading;
         private float targetSpeed;
 
         //Reference to the car data belonging to this car
-        private CarData carData;
+        private CompanionCarData compCarData;
 
         // Map coordinates
         private int mapLength = PathfindingController.mapLength;
@@ -25,8 +25,8 @@ namespace PathfindingForCars
         // Use this for initialization
         void Start()
         {
-            carData = GetComponent<CarData>();
-            targetPosition = new Vector3(195, 0, 25);
+            compCarData = GetComponent<CompanionCarData>();
+            targetPosition = new Vector3(105, 0, 40);
 
             //Draw the lidar visualization
             line = gameObject.GetComponent<LineRenderer>();
@@ -38,14 +38,14 @@ namespace PathfindingForCars
         // Update is called once per frame
         void Update()
         {
-            // Reset car if close to end of track 
-            if (GetCurrentPosition().x >= (mapLength - 10))   
+            // Reset car if close to end of track
+            if (GetCurrentPosition().x >= (mapLength - 10))  
             {
                 ResetEgoPosition();
             }
 
             // Detect obstacles surrounding the vehicle
-            List <ObstacleData> obstacles = DetectObstaclesWithinRadiusOfCar();
+            List<ObstacleData> obstacles = DetectObstaclesWithinRadiusOfCar();
             if (obstacles.Count > 0)
             {
                 for (int i = 0; i < obstacles.Count; i++)
@@ -58,22 +58,22 @@ namespace PathfindingForCars
 
         public Transform GetCurrentTransform()
         {
-            return carData.GetCarTransform();
+            return compCarData.GetCarTransform();
         }
 
         public Vector3 GetCurrentPosition()
         {
-            return carData.GetRearWheelPos();
+            return compCarData.GetRearWheelPos();
         }
 
         public float GetCurrentHeading()
         {
-            return carData.GetHeading();
+            return compCarData.GetHeading();
         }
 
         public float GetCurrentSpeed()
         {
-            return carData.GetSpeed();
+            return compCarData.GetSpeed();
         }
 
         public void SetTargetPosition(Vector3 position)
@@ -108,7 +108,7 @@ namespace PathfindingForCars
 
         private void ResetEgoPosition()
         {
-            transform.position = new Vector3(10, 0, 25);        // TODO: use mapwidth 
+            transform.position = new Vector3(10, 0, 5);        // TODO: use mapwidth 
             transform.eulerAngles = new Vector3(0, 90, 0);
 
             //Reset target position
@@ -117,7 +117,7 @@ namespace PathfindingForCars
 
         private void OnCollisionEnter(Collision collision)
         {
-            //Debug.Log("Collision detected");
+            Debug.Log("Collision detected");
             ResetEgoPosition();
         }
 

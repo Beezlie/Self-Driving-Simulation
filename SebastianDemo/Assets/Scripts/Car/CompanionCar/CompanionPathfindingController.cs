@@ -6,7 +6,7 @@ using System;
 namespace PathfindingForCars
 {
     //Takes care of all pathfinding
-    public class PathfindingController : MonoBehaviour
+    public class CompanionPathfindingController : MonoBehaviour
     {
         //Drags
         //The target we want to reach
@@ -31,17 +31,17 @@ namespace PathfindingForCars
         private SmoothPathController smoothPathController;
 
         //Reference to main Ego vehicle
-        private GameObject egoCar;
-        private EgoCarInterface egoCarInterface;
-        private CarData egoCarData;
+        private GameObject companionCar;
+        private CompanionCarInterface companionCarInterface;
+        private CompanionCarData companionCarData;
 
-        CarData targetCarData;
+        CompanionCarData targetCarData;
 
         void Awake()
         {
-            egoCar = GameObject.Find("EgoCar");
-            egoCarInterface = egoCar.GetComponent<EgoCarInterface>();
-            egoCarData = egoCar.GetComponent<CarData>();
+            companionCar = GameObject.Find("CompanionCar");
+            companionCarInterface = companionCar.GetComponent<CompanionCarInterface>();
+            companionCarData = companionCar.GetComponent<CompanionCarData>();
 
             heuristicsController = new HeuristicsController();
 
@@ -67,12 +67,13 @@ namespace PathfindingForCars
             debugController.DisplayCellObstacleIntersection();
             debugController.DisplayObstacleFlowField();
 
-            targetCarTrans.position = egoCarData.GetRearWheelPos();
-            targetCarTrans.rotation = egoCarData.GetCarTransform().rotation;
-            targetCarData = targetCarTrans.GetComponent<CarData>();
+            targetCarTrans.position = companionCarData.GetRearWheelPos();
+            targetCarTrans.rotation = companionCarData.GetCarTransform().rotation;
+            targetCarData = targetCarTrans.GetComponent<CompanionCarData>();
 
-            //Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
-            //Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
+            Debug.Log(string.Format("Start of Companion Pathfinding Controller"));
+            Debug.Log(string.Format("Companion target car position: {0}", targetCarData.GetCarTransform().position));
+            Debug.Log(string.Format("Companion target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
         }
 
 
@@ -81,22 +82,24 @@ namespace PathfindingForCars
         {
 
             //Check if the target position has changed
-            if (targetCarTrans.position != egoCarInterface.GetTargetPosition())
+            if (targetCarTrans.position != companionCarInterface.GetTargetPosition())
             {
-                targetCarTrans.position = egoCarInterface.GetTargetPosition();
-                targetCarTrans.rotation = egoCarInterface.GetCurrentTransform().rotation;       //temporary
-                float heading = egoCarInterface.GetCurrentHeading();                            //temporary
+                targetCarTrans.position = companionCarInterface.GetTargetPosition();
+                targetCarTrans.rotation = companionCarInterface.GetCurrentTransform().rotation;       //temporary
+                float heading = companionCarInterface.GetCurrentHeading();                            //temporary
 
                 // temporary testing to see where a new CarData can be created only from position and rotation 
                 // Tried similar instantiation as GenerateHybridAStarPath() from HybridAStarAngle.cs
-                //Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
-                //Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
+                Debug.Log(string.Format("Update Companion Pathfinding Controller"));
+                Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
+                Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
 
                 //Check if the target car has a valid position
                 if (HasTargetCarValidPosition(targetCarTrans.position, heading, targetCarData))
                 {
+                    Debug.Log("Passed Target Car valid check for CompanionCar");
                     //Stop the car
-                    SimController.current.StopCar();
+                    CompanionSimController.current.StopCar();
 
                     //Wait for the car to stop before trying to find a path
                     StartCoroutine(WaitForCarToStop());
@@ -110,15 +113,15 @@ namespace PathfindingForCars
         //or it might have passed the start position of the path when the path is finished
         IEnumerator WaitForCarToStop()
         {
-            while (SimController.current.GetActiveCarData().GetSpeed() > 5f)
+            while (CompanionSimController.current.GetActiveCarData().GetSpeed() > 5f)
             {
                 yield return null;
             }
 
             //Now we need to check again if the target position is possible
             //because we might have moved the target while the car was braking   
-            float heading = egoCarInterface.GetCurrentHeading();                            //temporary
-            if (HasTargetCarValidPosition(targetCarTrans.position, heading, egoCarData))
+            float heading = companionCarInterface.GetCurrentHeading();                            //temporary
+            if (HasTargetCarValidPosition(targetCarTrans.position, heading, companionCarData))
             {
                 //The car has stopped and the target should be possible, so generate a path
                 StartCoroutine(GeneratePath());
@@ -136,6 +139,8 @@ namespace PathfindingForCars
         //Generate a path and send it to the car
         IEnumerator GeneratePath()
         {
+            Debug.Log("Generating path for companion car...."); 
+
             IntVector2 targetCellPos = ConvertCoordinateToCellPos(targetCarTrans.position);
 
             //To measure time, is measured in tick counts so no float
@@ -150,7 +155,7 @@ namespace PathfindingForCars
 
             heuristicsController.EuclideanDistance(targetCellPos);
 
-            //DisplayTime(startTime, Environment.TickCount, "Euclidean Distance");
+            DisplayTime(startTime, Environment.TickCount, "Euclidean Distance");
 
             yield return new WaitForSeconds(0.05f);
 
@@ -160,7 +165,7 @@ namespace PathfindingForCars
 
             heuristicsController.DynamicProgramming(targetCellPos);
 
-            //DisplayTime(startTime, Environment.TickCount, "Dynamic Programming");
+            DisplayTime(startTime, Environment.TickCount, "Dynamic Programming");
 
             yield return new WaitForSeconds(0.05f);
 
@@ -173,7 +178,7 @@ namespace PathfindingForCars
             //
             //First we have to check if a path is even possible by using the flow field
             //If the cell the car starts in has a distance which is the max distance, then a path is not possible
-            IntVector2 carCellPos = ConvertCoordinateToCellPos(SimController.current.GetActiveCarData().GetRearWheelPos());
+            IntVector2 carCellPos = ConvertCoordinateToCellPos(CompanionSimController.current.GetActiveCarData().GetRearWheelPos());
 
             if ((HeuristicsController.flowFieldHeuristics[carCellPos.x, carCellPos.z] <= (float)System.Int32.MaxValue))
             {
@@ -184,12 +189,13 @@ namespace PathfindingForCars
                 startTime = Environment.TickCount;
 
                 //The output from this is finalPath and expandedNodes
-                //hybridAStar.GenerateHybridAStarPath(targetCarTrans, finalPath, expandedNodes);
+                // (DEVANSH: uncommented to use hubridAStar for all companion cars) 
+                hybridAStar.GenerateHybridAStarPath(targetCarTrans, finalPath, expandedNodes);
 
                 //The slower but more accurate version
-                hybridAStarAngle.GenerateHybridAStarPath(targetCarTrans, finalPath, expandedNodes);
+                //hybridAStarAngle.GenerateHybridAStarPath(targetCarTrans, finalPath, expandedNodes); (DEVANSH)
 
-                //DisplayTime(startTime, Environment.TickCount, "Hybrid A Star");
+                DisplayTime(startTime, Environment.TickCount, "Hybrid A Star");
 
 
                 //Reset debugger
@@ -212,9 +218,9 @@ namespace PathfindingForCars
 
                     List<Node> smoothPath = smoothPathController.GetSmoothPath(finalPath, false);
 
-                    //DisplayTime(startTime, Environment.TickCount, "Smooth path");
+                    DisplayTime(startTime, Environment.TickCount, "Smooth path");
 
-                    SimController.current.SendPathToActiveCar(smoothPath);
+                    CompanionSimController.current.SendPathToActiveCar(smoothPath);
 
                     //Debug if the smooth path is working
                     debugController.DisplayFinalPath(finalPath, smoothPath);
@@ -229,17 +235,24 @@ namespace PathfindingForCars
 
 
         //Check if the target car has a valid position
-        private bool HasTargetCarValidPosition(Vector3 targetPos, float heading, CarData carData)
+        private bool HasTargetCarValidPosition(Vector3 targetPos, float heading, CompanionCarData compCarData)
         {
             bool hasValidPosition = false;
             float targetCarHeading = heading * Mathf.Deg2Rad;
 
-            if (ObstaclesDetection.TargetPositionWithinTrack(targetPos, targetCarHeading, carData)) //(MATT)
+            Debug.Log("Inside valid check for companion cars. About to call ObstacleDetection.HasCarInvalidPosition()"); // DEVANSH
+
+            // TODO: fix this, commenting for now
+            /*
+            if (ObstaclesDetection.HasCarInvalidPosition(targetPos, targetCarHeading, compCarData)) //(DEVANSH: use original invalid car fcn)
             {
                 hasValidPosition = true;
             }
+            Debug.Log("hasValidPosition: " + hasValidPosition);
+            */ 
 
-            return hasValidPosition;
+            return true;            // TODO: DEVANSH, REMOVE AFTER TESTING 
+            //return hasValidPosition;
         }
 
 

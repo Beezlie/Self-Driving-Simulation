@@ -5,7 +5,8 @@ using System.Collections.Generic;
 
 namespace PathfindingForCars
 {
-    [System.Serializable]
+    // DEVANSH 
+    /*[System.Serializable]
     public class AxleInfo
     {
         public WheelCollider leftWheel;
@@ -14,12 +15,12 @@ namespace PathfindingForCars
         public bool motor;
         //Can this wheel steer?
         public bool steering;
-    }
+    }*/
 
 
 
     //From http://docs.unity3d.com/Manual/WheelColliderTutorial.html
-    public class CarController : MonoBehaviour
+    public class CompanionCarController : MonoBehaviour
     {
         public List<AxleInfo> axleInfos;
 
@@ -31,11 +32,11 @@ namespace PathfindingForCars
         private Vector3 lastPosition = Vector3.zero;
 
         //Reference to the PID controller
-        private PIDController PIDScript;
+        private CompanionPIDController PIDScript;
         //Reference to the script that makes the car follow a path
-        private FollowPath followPathScript;
+        private CompanionFollowPath followPathScript;
         //Reference to the car data belonging to this car
-        private CarData carData;
+        private CompanionCarData compCarData;
 
         //Driving modes
         private enum CarMode { Forward, Reverse, Stop };
@@ -53,11 +54,11 @@ namespace PathfindingForCars
 
             carRB.centerOfMass = carRB.centerOfMass - new Vector3(0f, 0.8f, 0f);
 
-            PIDScript = GetComponent<PIDController>();
+            PIDScript = GetComponent<CompanionPIDController>();
 
-            carData = GetComponent<CarData>();
+            compCarData = GetComponent<CompanionCarData>();
 
-            followPathScript = GetComponent<FollowPath>();
+            followPathScript = GetComponent<CompanionFollowPath>();
         }
 
 
@@ -81,9 +82,9 @@ namespace PathfindingForCars
             float brakeTorque = 0f;
 
             //Self-driving control
-            if (carMode == CarMode.Forward && currentSpeed < carData.GetMaxSpeed())
+            if (carMode == CarMode.Forward && currentSpeed < compCarData.GetMaxSpeed())
             {
-                motorTorque = carData.GetMaxMotorTorque();
+                motorTorque = compCarData.GetMaxMotorTorque();
 
                 //Get the steering angle for the steering wheels
                 //Has to be in either forward or reverse, because we need a path to
@@ -93,7 +94,7 @@ namespace PathfindingForCars
             else if (carMode == CarMode.Reverse)
             {
                 //Reversing is slower
-                motorTorque = -carData.GetMaxMotorTorque() * 0.5f;
+                motorTorque = -compCarData.GetMaxMotorTorque() * 0.5f;
 
                 //Get the steering angle for the steering wheels
                 steeringAngle = GetSteeringAngle();
@@ -101,7 +102,7 @@ namespace PathfindingForCars
             //Stop
             else
             {
-                brakeTorque = carData.GetMaxBrakeTorque();
+                brakeTorque = compCarData.GetMaxBrakeTorque();
             }
 
 
@@ -238,11 +239,11 @@ namespace PathfindingForCars
             ////Exponential function y = Math.Pow(ab,x)
             ////y - angle
             ////x - speed of car
-            //float b = Mathf.Pow(highSpeedSteerAngle / lowSpeedSteerAngle, 1f / carData.GetMaxSpeed());
+            //float b = Mathf.Pow(highSpeedSteerAngle / lowSpeedSteerAngle, 1f / compCarData.GetMaxSpeed());
 
             //return lowSpeedSteerAngle * Mathf.Pow(b, Mathf.Abs(currentSpeed));
 
-            float speedFactor = Mathf.Abs(currentSpeed) / carData.GetMaxSpeed();
+            float speedFactor = Mathf.Abs(currentSpeed) / compCarData.GetMaxSpeed();
 
             float wheelAngle = highSpeedSteerAngle + wheelAngleCurve.Evaluate(1f - speedFactor) * lowSpeedSteerAngle;
 
@@ -277,9 +278,9 @@ namespace PathfindingForCars
             return currentSpeed;
         }
 
-        public CarData GetCarData()
+        public CompanionCarData GetCarData()
         {
-            return carData;
+            return compCarData;
         }
 
         public void SendPathToCar(List<Node> wayPoints)
