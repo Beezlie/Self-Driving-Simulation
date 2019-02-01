@@ -47,13 +47,14 @@ public class LateralController
     }
 
     //TODO - check that this function actually works
-    protected float getYaw(Quaternion rotation)
+    protected float getYaw(Vector3 eulerAngles)
     {
-        float yaw = Mathf.Asin(2 * rotation.x * rotation.y + 2 * rotation.z * rotation.w);
-        ////Debug.Log(string.Format("x: {0}, y: {1}, z: {2}, w: {3}", rotation.x, rotation.y, rotation.z, rotation.w));
-        //Debug.Log(string.Format("Yaw: {0}", yaw));
-
-       // Debug.Log(string.Format("Test: {0}", Mathf.Asin(2 * 0.5f * 0.5f)));
+        float yaw = 0;
+        if (eulerAngles.z > Constants.neutralHeading) {
+            yaw = -1 * Mathf.Abs(eulerAngles.z - Constants.neutralHeading) * Mathf.Deg2Rad;
+        } else {
+            yaw = Mathf.Abs(eulerAngles.z - Constants.neutralHeading) * Mathf.Deg2Rad;
+        }
         return yaw;
     }
 }

@@ -73,16 +73,16 @@ public class StanleyController : LateralController
             return 0f;
         }
 
-        float yaw = getYaw(observedPose.rotation);
+        float yaw = getYaw(observedPose.rotation.eulerAngles) * Mathf.Deg2Rad;
 
-        float headingError = getYaw(goal.rotation) - yaw;
+        float headingError = getYaw(goal.rotation.eulerAngles) - yaw;
         float headingCorrection = kPHeading * headingError + kDHeading * ((headingError - prevHeadingError) / dt);
 
         // Incoming pose and velocity are for the rear axles - convert to front.
         Pose frontPose = new Pose(new Vector3(observedPose.position.x + wheelbase + Mathf.Cos(yaw), observedPose.position.y + wheelbase + Mathf.Sin(yaw), 0), observedPose.rotation);
         Vector3 frontLinearVel = new Vector3(linearVel.x + wheelbase * angularVel * Mathf.Sin(yaw), linearVel.y + wheelbase * angularVel * Mathf.Cos(yaw), 0);
 
-        Vector3 intersection = findIntersection(frontPose.position, goal.position, getYaw(goal.rotation));
+        Vector3 intersection = findIntersection(frontPose.position, goal.position, getYaw(goal.rotation.eulerAngles));
         float crosstrackError = Vector3.Distance(intersection, frontPose.position);
 
         // Goal line always points forward - so, if pose.y is bigger, pose is to the left.

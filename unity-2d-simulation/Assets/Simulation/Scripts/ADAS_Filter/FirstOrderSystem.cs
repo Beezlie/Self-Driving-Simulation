@@ -8,7 +8,6 @@ public class FirstOrderSystem {
     private float k;
     private float tau;
     private float samplingFreqHz;
-    private float initialOutput;
     private DiscreteSystem discreteSystem;
 
     public FirstOrderSystem(float k, float tau, float samplingFreqHz, float initialOutput)
@@ -16,7 +15,6 @@ public class FirstOrderSystem {
         this.k = k;
         this.tau = tau;
         this.samplingFreqHz = samplingFreqHz;
-        this.initialOutput = initialOutput;
 
         float T = 1 / this.samplingFreqHz;
         float denom = 2 * this.tau + T;

@@ -10,9 +10,9 @@ public class PIDController
     public float d;
     private float saturationMin;
     private float saturationMax;
-    private bool prevValid = false;
-    private bool goalValid = false;
-    private bool accumulate = true;
+    private bool prevValid;
+    private bool goalValid;
+    private bool accumulate;
     private float goal;
     private float accum;
     private float prevError;

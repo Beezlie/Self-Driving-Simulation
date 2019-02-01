@@ -11,6 +11,8 @@ public static class Constants {
     public static float throttleCommandMin = 0f;
     public static float throttleCommandMax = 100f;
 
+    public static float neutralHeading = 270f;
+
     //TODO - find out how to make these dynamically configurable
 
     // Car controller constants

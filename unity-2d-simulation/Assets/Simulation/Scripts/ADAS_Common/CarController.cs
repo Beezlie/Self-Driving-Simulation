@@ -14,6 +14,9 @@ public class CarController
     private float discontinuityThreshold;
     private bool goalReceived;
 
+    //temporary
+    public float desiredVel = 0;
+
     public class PIDParams
     {
         public float p;
@@ -109,7 +112,7 @@ public class CarController
     }
 
     //TODO - make this private once ROS# implemented and pass in ROS Pose instead of system Pose
-    public CarCommand syncCallback(Pose pose, Vector3 linearVel, float angularVel)
+    public CarCommand syncCallback(Pose pose, Vector2 linearVel, float angularVel)
     {
         if (!goalReceived)
         {
@@ -117,17 +120,14 @@ public class CarController
         }
 
         //TODO - check to make sure this is doing same thing as before
-        Pose observedPose = new Pose(pose.position, pose.rotation);
-        Debug.Log(string.Format("Observed pose of car: {0}", observedPose));
-        Debug.Log(string.Format("Target goal of car: {0}", posController.getGoal()));
+        Debug.Log(string.Format("Observed pose of car: {0}", pose));
 
         // Velocity at which we'd like to approach the goal.
-        float velCommand = posController.commandStep(0, observedPose.position.x, 1 / Constants.targetHz, true);
-        Debug.Log(string.Format("Velocity to approach the goal with: {0}", velCommand));
+        float velCommand = posController.commandStep(0, pose.position.x, 1 / Constants.targetHz, true);
 
         // Set goal to approach the goal AND maintain position.
-        float desiredVel = velCommand + treadmillVel;
-        Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", velCommand));
+        desiredVel = velCommand + treadmillVel;
+        Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", desiredVel));
         velController.setGoal(desiredVel);
 
         // Explicit decision: No reset of D term calculation. It's not user-controlled and is assumed to be "reasonably continuous."
@@ -140,7 +140,7 @@ public class CarController
                                                         1 / Constants.targetHz,
                                                         Mathf.Abs(pose.position.x - posController.getGoal()) < posIThreshold);
 
-        float headCommand = headController.commandStep(observedPose,
+        float headCommand = headController.commandStep(pose,
                                                         new Vector3(treadmillVel + linearVel.x, linearVel.y, 0),
                                                         angularVel,
                                                         1 / Constants.targetHz);
@@ -171,7 +171,6 @@ public class CarController
     public void treadmillVelCallback(GameObject treadmill)
     {
         treadmillVel = treadmill.gameObject.GetComponent<TrackSim>().vel;
-        Debug.Log(string.Format("Treadmill velocity in car controller: {0}", treadmillVel));
     }
 
     private void resetCallback()
