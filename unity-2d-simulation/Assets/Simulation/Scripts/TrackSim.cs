@@ -36,7 +36,7 @@ public class TrackSim : MonoBehaviour
     // For Testing
     private void ModifySpeed()
     {
-        speedGoal = Random.Range(0, 0);
+        speedGoal = 1.36f;
         throttle = trackController.commandVelCallback(speedGoal);
     }
 }

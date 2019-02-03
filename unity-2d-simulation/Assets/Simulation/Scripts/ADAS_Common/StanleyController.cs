@@ -73,7 +73,7 @@ public class StanleyController : LateralController
             return 0f;
         }
 
-        float yaw = getYaw(observedPose.rotation.eulerAngles) * Mathf.Deg2Rad;
+        float yaw = getYaw(observedPose.rotation.eulerAngles);
 
         float headingError = getYaw(goal.rotation.eulerAngles) - yaw;
         float headingCorrection = kPHeading * headingError + kDHeading * ((headingError - prevHeadingError) / dt);
