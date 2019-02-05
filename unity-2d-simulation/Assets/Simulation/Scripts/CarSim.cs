@@ -11,8 +11,6 @@ public class CarSim : MonoBehaviour
     private AsymmetricFirstOrderSystem throttleSys;
     private float steer;        // in radians       
     private float throttle;     // in percentage
-
-    private Rigidbody2D rb;
     private GameObject track;
 
     private Pose goal;      //temporary
@@ -23,6 +21,8 @@ public class CarSim : MonoBehaviour
     private float angularVel;
     private float carWidth;
     private float carLength;
+
+    private CarState carState;
 
     void Awake()
     {
@@ -52,22 +52,25 @@ public class CarSim : MonoBehaviour
         carHeading = Constants.neutralHeading;
         linearVel = new Vector3(0, 0, 0);
         angularVel = 0;
+
+        // Set initial car state
+        carState = new CarState(0, transform.position.x, transform.position.y, 0, carLength/2, carLength/2);
     }
 
-    void CalculateControls ()
+    void CalculateControls()
     {
         // Receive feedback of the current treadmill velocity
         carController.treadmillVelCallback(track);      // temporary
-        
+
         //temporary
-        CarController.CarCommand command = carController.syncCallback(new Pose(transform.position, transform.rotation), linearVel, angularVel);       
+        CarController.CarCommand command = carController.syncCallback(new Pose(transform.position, transform.rotation), linearVel, angularVel);
 
         //TODO - figure out how to use throttle and steer to move the car
         carCommandCallback(command);
         Debug.Log(string.Format("Steer after passing through sys: {0}", steer));
         Debug.Log(string.Format("Throttle after passing through sys: {0}", throttle));
 
-        Calculate();
+        UpdateCar();
     }
 
     // TODO - fix this once using ROS#
@@ -81,11 +84,30 @@ public class CarSim : MonoBehaviour
     private void ModifyGoal()
     {
         int x = Random.Range(6, 6);
-        goal = new Pose(new Vector3(x, transform.position.y, 0), transform.rotation);   
+        goal = new Pose(new Vector3(x, transform.position.y, 0), transform.rotation);
         Debug.Log(string.Format("New Goal X: {0}", x));
         carController.goalPoseCallback(goal);
     }
 
+    void UpdateCar()
+    {
+        float dt = (1 / Constants.targetHz);
+        float trackVel = track.gameObject.GetComponent<TrackSim>().vel;
+
+        //Update bicycle model
+        carState.UpdateState(throttle, steer, dt);
+
+        //Update the state of the car sprite
+        transform.position = new Vector3(carState.x, carState.y);
+        Quaternion rotation = Quaternion.Euler(0, 0, carState.psi + Constants.neutralHeading);
+        transform.rotation = rotation;
+
+        linearVel = new Vector3(carState.dx, carState.dy, 0);
+        angularVel = carState.dv;
+        Debug.Log(string.Format("Linear vel X: {0}, Y {1}", linearVel.x, linearVel.y));
+    }
+
+    /*
     //Kinematic bicycle model
     void Calculate()
     {
@@ -96,7 +118,7 @@ public class CarSim : MonoBehaviour
         float lf = carLength / 2;
         float a = throttle * 1;     // think need to multiply throttle by some constant accel
         float slipAngle = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));
-        float dv = a;   // might be a problem here  
+        float dv = a;    
         float dx = linearVel.x * Mathf.Cos(carHeading + slipAngle);
         float dy = linearVel.x * Mathf.Sin(carHeading + slipAngle);
         float dh = (linearVel.x / lr) * Mathf.Sin(slipAngle);
@@ -131,5 +153,7 @@ public class CarSim : MonoBehaviour
         transform.position = newPos;
         transform.rotation = newRot;
     }
+     * 
+     */
 }
 
