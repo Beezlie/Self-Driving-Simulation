@@ -40,7 +40,7 @@ public class CarState
         float vnew = v * acceleration;
         dx = vnew * Mathf.Cos(psi + beta);
         dy = vnew * Mathf.Sin(psi + beta);
-        dpsi = vnew / (lr * Mathf.Sin(beta));
+        dpsi = (vnew / lr) * Mathf.Sin(beta);
         dv = 0;
 
         // update state values

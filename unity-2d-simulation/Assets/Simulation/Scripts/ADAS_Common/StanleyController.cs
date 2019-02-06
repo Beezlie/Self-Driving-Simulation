@@ -76,14 +76,21 @@ public class StanleyController : LateralController
         float yaw = getYaw(observedPose.rotation.eulerAngles);
 
         float headingError = getYaw(goal.rotation.eulerAngles) - yaw;
+        Debug.Log(string.Format("headingError: {0}", headingError));
+
         float headingCorrection = kPHeading * headingError + kDHeading * ((headingError - prevHeadingError) / dt);
+        Debug.Log(string.Format("headingCorrection: {0}", headingCorrection));
 
         // Incoming pose and velocity are for the rear axles - convert to front.
-        Pose frontPose = new Pose(new Vector3(observedPose.position.x + wheelbase + Mathf.Cos(yaw), observedPose.position.y + wheelbase + Mathf.Sin(yaw), 0), observedPose.rotation);
-        Vector3 frontLinearVel = new Vector3(linearVel.x + wheelbase * angularVel * Mathf.Sin(yaw), linearVel.y + wheelbase * angularVel * Mathf.Cos(yaw), 0);
+        Pose frontPose = new Pose(new Vector3(observedPose.position.x + Mathf.Cos(yaw), observedPose.position.y + Mathf.Sin(yaw), 0), observedPose.rotation);
+        Debug.Log(string.Format("frontPose: {0}", frontPose));
+
+        Vector3 frontLinearVel = new Vector3(linearVel.x + angularVel * Mathf.Sin(yaw), linearVel.y + angularVel * Mathf.Cos(yaw), 0);
+        Debug.Log(string.Format("frontLinearVel: {0}", frontLinearVel));
 
         Vector3 intersection = findIntersection(frontPose.position, goal.position, getYaw(goal.rotation.eulerAngles));
         float crosstrackError = Vector3.Distance(intersection, frontPose.position);
+        Debug.Log(string.Format("cross track error: {0}", crosstrackError));
 
         // Goal line always points forward - so, if pose.y is bigger, pose is to the left.
         if (goal.position.y < frontPose.position.y) {
@@ -91,6 +98,7 @@ public class StanleyController : LateralController
         }
 
         float crosstrackCorrection = Mathf.Atan2(kCrosstrack * crosstrackError, velDamping + Vector3.Magnitude(frontLinearVel));
+        Debug.Log(string.Format("cross track correction: {0}", crosstrackCorrection));
 
         prevHeadingError = headingError;
 

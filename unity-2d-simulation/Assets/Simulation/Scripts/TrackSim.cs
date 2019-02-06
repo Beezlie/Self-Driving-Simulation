@@ -29,7 +29,6 @@ public class TrackSim : MonoBehaviour
 
         //move the track in the x direction
         float offset = Time.time * vel;
-        Debug.Log(string.Format("offset: {0}", offset));
         GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, -offset);
     }
 

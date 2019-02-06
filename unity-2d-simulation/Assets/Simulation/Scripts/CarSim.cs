@@ -16,13 +16,9 @@ public class CarSim : MonoBehaviour
     private Pose goal;      //temporary
 
     // Car info
-    private float carHeading;       // in radians
-    private Vector2 linearVel;
-    private float angularVel;
-    private float carWidth;
-    private float carLength;
-
     private CarState carState;
+    private Vector3 linearVel = new Vector3(0, 0, 0);
+    private float angularVel = 0;
 
     void Awake()
     {
@@ -42,19 +38,8 @@ public class CarSim : MonoBehaviour
         steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
-        // Get dimensions of car object
-        Vector3 carSize = GetComponent<Renderer>().bounds.size;
-        carWidth = carSize.y;
-        carLength = carSize.x;
-        Debug.Log(string.Format("Car length: {0}", carLength));
-
-        // Set initial car data
-        carHeading = Constants.neutralHeading;
-        linearVel = new Vector3(0, 0, 0);
-        angularVel = 0;
-
         // Set initial car state
-        carState = new CarState(0, transform.position.x, transform.position.y, 0, carLength/2, carLength/2);
+        carState = new CarState(0, transform.position.x, transform.position.y, 0, Constants.axleDistance / 2, Constants.axleDistance / 2);
     }
 
     void CalculateControls()
@@ -83,8 +68,9 @@ public class CarSim : MonoBehaviour
     // For Testing
     private void ModifyGoal()
     {
-        int x = Random.Range(6, 6);
-        goal = new Pose(new Vector3(x, transform.position.y, 0), transform.rotation);
+        float x = 10;
+        float y = 9;
+        goal = new Pose(new Vector3(x, y, 0), transform.rotation);
         Debug.Log(string.Format("New Goal X: {0}", x));
         carController.goalPoseCallback(goal);
     }
@@ -99,61 +85,15 @@ public class CarSim : MonoBehaviour
 
         //Update the state of the car sprite
         transform.position = new Vector3(carState.x, carState.y);
-        Quaternion rotation = Quaternion.Euler(0, 0, carState.psi + Constants.neutralHeading);
+        float newAngle = (carState.psi * Mathf.Rad2Deg);// + Constants.neutralHeading;
+        Debug.Log(string.Format("newAngle: {0}", newAngle));
+        Quaternion rotation = Quaternion.Euler(0, 0, (carState.psi * Mathf.Rad2Deg));// + Constants.neutralHeading);
+        Debug.Log(string.Format("rotation quaternion: {0}", rotation));
         transform.rotation = rotation;
 
         linearVel = new Vector3(carState.dx, carState.dy, 0);
         angularVel = carState.dv;
         Debug.Log(string.Format("Linear vel X: {0}, Y {1}", linearVel.x, linearVel.y));
     }
-
-    /*
-    //Kinematic bicycle model
-    void Calculate()
-    {
-        // TODO - how do I factor time into all of this???
-        float dt = (1 / Constants.targetHz);   
-
-        float lr = carLength / 2;
-        float lf = carLength / 2;
-        float a = throttle * 1;     // think need to multiply throttle by some constant accel
-        float slipAngle = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));
-        float dv = a;    
-        float dx = linearVel.x * Mathf.Cos(carHeading + slipAngle);
-        float dy = linearVel.x * Mathf.Sin(carHeading + slipAngle);
-        float dh = (linearVel.x / lr) * Mathf.Sin(slipAngle);
-
-        Debug.Log(string.Format("lr = lf: {0}", lr));
-        Debug.Log(string.Format("slip angle: {0}", slipAngle));
-        Debug.Log(string.Format("dx: {0}", dx));
-        Debug.Log(string.Format("dy: {0}", dy));
-        Debug.Log(string.Format("dh: {0}", dh));
-        Debug.Log(string.Format("dv: {0}", dv));
-
-        // TODO - make sure all equations/calculations correct
-        //Remember: dx, dy = change in distance over time (velocity)
-        // dh = change in inertial heading
-        // dv = change in speed over time (acceleration)
-
-        // how to factor in constant velocity from treadmill?  
-        // right now since acceleration is always +ve, if linearVel.x == trackVel, it will just constanly move forward
-        float trackVel = track.gameObject.GetComponent<TrackSim>().vel;
-        linearVel = new Vector3(linearVel.x + dv - trackVel, 0, 0);
-        Debug.Log(string.Format("New vel: {0}", linearVel.x));
-
-        // I think this is wrong - need to figure out what they are referring to as angular vel (rotation of heading or about some circle's radius)
-        //angularVel = dh;
-
-        carHeading = carHeading + dh ;  // is this correct?
-        Debug.Log(string.Format("New heading: {0}", carHeading));
-
-        Vector3 newPos = new Vector3(transform.position.x + dx, transform.position.y + dy, 0);
-        Quaternion newRot = transform.rotation;
-        newRot.eulerAngles = new Vector3(0, 0, Constants.neutralHeading + carHeading * Mathf.Rad2Deg);  // is this right?  Will it only rotate heading in one direction?
-        transform.position = newPos;
-        transform.rotation = newRot;
-    }
-     * 
-     */
 }
 
