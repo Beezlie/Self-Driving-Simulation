@@ -49,6 +49,11 @@ public class LateralController
     //TODO - check that this function actually works
     protected float getYaw(Vector3 eulerAngles)
     {
-        return eulerAngles.z * Mathf.Deg2Rad;
+        float yaw = eulerAngles.z * Mathf.Deg2Rad;
+        if (yaw > Mathf.PI)
+        {
+            yaw = 2 * Mathf.PI - yaw;
+        }
+        return yaw;
     }
 }

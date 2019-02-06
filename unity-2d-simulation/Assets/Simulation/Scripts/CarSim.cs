@@ -44,6 +44,7 @@ public class CarSim : MonoBehaviour
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
+        // TODO: use the car's current direction as psi? DEVANSH
         carState = new CarState(0, transform.position.x, transform.position.y, 0, length / 2, length / 2);
     }
 
@@ -74,7 +75,7 @@ public class CarSim : MonoBehaviour
     private void ModifyGoal()
     {
         float x = Random.Range(10, 10);
-        float y = 3;
+        float y = 2;
         goal = new Pose(new Vector3(x, y, 0), transform.rotation);
         Debug.Log(string.Format("New Goal X: {0}", x));
         carController.goalPoseCallback(goal);
