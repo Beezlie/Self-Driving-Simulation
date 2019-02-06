@@ -35,7 +35,7 @@ public class TrackSim : MonoBehaviour
     // For Testing
     private void ModifySpeed()
     {
-        speedGoal = 0.01f;
+        speedGoal = 0.5f;
         throttle = trackController.commandVelCallback(speedGoal);
     }
 }

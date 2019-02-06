@@ -55,11 +55,11 @@ public class CarController
         }
     }
 
-    public CarController()
+    public CarController(float axleDistance)
     {
         velController = new PIDController(Constants.pVel, Constants.iVel, Constants.dVel, Constants.throttleCommandMin, Constants.throttleCommandMax);
         posController = new PIDController(Constants.pPos, Constants.iPos, Constants.dPos, Constants.velMin, Constants.velMax);
-        headController = new StanleyController(Constants.kpHeading, Constants.kdHeading, Constants.kCrosstrack, Constants.velDamping, Constants.axleDistance);
+        headController = new StanleyController(Constants.kpHeading, Constants.kdHeading, Constants.kCrosstrack, Constants.velDamping, axleDistance / 2);
         velKFeedforward = Constants.kFeedForward;
         discontinuityThreshold = Constants.discontinuityThreshold;
         posIThreshold = Constants.iThreshold;

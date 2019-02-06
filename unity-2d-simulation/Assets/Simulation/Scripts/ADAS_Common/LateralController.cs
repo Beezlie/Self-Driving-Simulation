@@ -49,16 +49,6 @@ public class LateralController
     //TODO - check that this function actually works
     protected float getYaw(Vector3 eulerAngles)
     {
-        /*
-        float yaw = 0;
-        if (eulerAngles.z > Constants.neutralHeading) {
-            yaw = -1 * Mathf.Abs(eulerAngles.z - Constants.neutralHeading) * Mathf.Deg2Rad;
-        } else {
-            yaw = Mathf.Abs(eulerAngles.z - Constants.neutralHeading) * Mathf.Deg2Rad;
-        }
-        Debug.Log(string.Format("Yaw: {0}", yaw));
-        return yaw;
-        */
         return eulerAngles.z * Mathf.Deg2Rad;
     }
 }

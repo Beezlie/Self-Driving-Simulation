@@ -34,12 +34,17 @@ public class CarSim : MonoBehaviour
         InvokeRepeating("ModifyGoal", 0f, 10f);        //for testing to set goal
         InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
 
-        carController = new CarController();
+        //Get dimensions of car sprite
+        float length = GetComponent<SpriteRenderer>().bounds.size.x;
+        float width = GetComponent<SpriteRenderer>().bounds.size.y;
+        Debug.Log(string.Format("car length: {0}", length));
+
+        carController = new CarController(length);
         steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
-        carState = new CarState(0, transform.position.x, transform.position.y, 0, Constants.axleDistance / 2, Constants.axleDistance / 2);
+        carState = new CarState(0, transform.position.x, transform.position.y, 0, length / 2, length / 2);
     }
 
     void CalculateControls()
@@ -68,8 +73,8 @@ public class CarSim : MonoBehaviour
     // For Testing
     private void ModifyGoal()
     {
-        float x = 10;
-        float y = 9;
+        float x = Random.Range(10, 10);
+        float y = 3;
         goal = new Pose(new Vector3(x, y, 0), transform.rotation);
         Debug.Log(string.Format("New Goal X: {0}", x));
         carController.goalPoseCallback(goal);
@@ -81,7 +86,7 @@ public class CarSim : MonoBehaviour
         float trackVel = track.gameObject.GetComponent<TrackSim>().vel;
 
         //Update bicycle model
-        carState.UpdateState(throttle, steer, dt);
+        carState.UpdateState(throttle, steer, dt, trackVel);
 
         //Update the state of the car sprite
         transform.position = new Vector3(carState.x, carState.y);

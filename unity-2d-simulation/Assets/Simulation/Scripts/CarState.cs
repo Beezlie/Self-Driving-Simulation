@@ -32,13 +32,13 @@ public class CarState
         Debug.Log(string.Format("setting psi as {0}", psi));
     }
 
-    public void UpdateState(float throttle, float steer, float dt)
+    public void UpdateState(float throttle, float steer, float dt, float trackVel)
     {
         float beta = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));   //steer is in radians
 
         // calculate incremental changes
         float vnew = v * acceleration;
-        dx = vnew * Mathf.Cos(psi + beta);
+        dx = vnew * Mathf.Cos(psi + beta) - trackVel;
         dy = vnew * Mathf.Sin(psi + beta);
         dpsi = (vnew / lr) * Mathf.Sin(beta);
         dv = 0;
