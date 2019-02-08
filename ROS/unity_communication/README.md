@@ -20,3 +20,19 @@ $ catkin_make
 $ cd ~/catkin_ws
 $ source ./devel/setup.bash
 ```
+
+6. Open a seperate terminal and launch roscore
+```
+$ roscore
+```
+
+7. Create rosbridge server in a separate terminal
+```
+$ roslaunch rosbridge_server rosbridge_websocket.launch
+```
+
+8. Run the executable ROS script
+```
+$ rosrun unity_communication <filename>
+```
+

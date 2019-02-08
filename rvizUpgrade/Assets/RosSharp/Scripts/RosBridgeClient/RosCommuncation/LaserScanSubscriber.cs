@@ -1,4 +1,4 @@
-﻿<!--
+﻿/*
 © Siemens AG, 2018
 Author: Berkay Alp Cakal (berkay_alp.cakal.ct@siemens.com)
 
@@ -11,11 +11,22 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
--->
+*/
 
-<launch>
+namespace RosSharp.RosBridgeClient
+{
+    public class LaserScanSubscriber : Subscriber<Messages.Sensor.LaserScan>
+    {
+        public LaserScanWriter laserScanWriter;
 
-	<node name="demo" pkg="unity_communication" type="demo.py" output="screen"/>
-	<node name="rqt_graph" pkg="rqt_graph" type="rqt_graph" output="screen" />
+        protected override void Start()
+        {
+            base.Start();
+        }
 
-</launch>
+        protected override void ReceiveMessage(Messages.Sensor.LaserScan laserScan)
+        {
+            laserScanWriter.Write(laserScan);
+        }
+    }
+}
