@@ -21,6 +21,7 @@ public class DetectCars : MonoBehaviour {
         {
             //instantiate each car
             GameObject car = Instantiate(Resources.Load("Prefabs/" + carPrefabs[i], typeof(GameObject))) as GameObject;
+            car.transform.localScale = new Vector3(2, 2, 2);
 
             //create a ros connector for each car
             RosConnector rosConnector = car.AddComponent(typeof(RosConnector)) as RosConnector;

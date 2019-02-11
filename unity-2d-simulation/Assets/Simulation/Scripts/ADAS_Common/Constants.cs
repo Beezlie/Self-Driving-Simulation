@@ -20,8 +20,11 @@ public static class Constants {
     public static ArrayList boundingBox = new ArrayList { 0.0f, 0.0f, 0.14155f, 0.1002f };
     public static float goalDistanceLimit = 0.36f;
 
-    public static float pVel = 2.5f;
-    public static float iVel = 1f;
+    //public static float pVel = 2.5f;
+    //public static float iVel = 1f;
+    //public static float dVel = 0f;
+    public static float pVel = 2f * 5;
+    public static float iVel = 0.5f * 5;
     public static float dVel = 0f;
     public static float pVelUrgent = 2.5f;
     public static float iVelUrgent = 1f;
@@ -32,17 +35,22 @@ public static class Constants {
     public static float velMaxUrgent = 4f;
     public static float kFeedForward = 16.6f;
 
-    public static float pPos = 1f;
-    public static float iPos = 0.025f;
-    public static float dPos = 0.75f;
+    //public static float pPos = 1f;
+    //public static float iPos = 0.025f;
+    //public static float dPos = 0.75f;
+    public static float pPos = 0.75f * 5;
+    public static float iPos = 0.015f * 5;
+    public static float dPos = 0.75f *5;
     public static float pPosUrgent = 1f;
     public static float iPosUrgent = 0.025f;
     public static float dPosUrgent = 0.75f;
     public static float discontinuityThreshold = 0.05f;
     public static float iThreshold = 0.1f;
 
-    public static float kpHeading = 0.5f;
-    public static float kdHeading = 0.01f;
+    //public static float kpHeading = 0.5f;
+    //public static float kdHeading = 0.01f;
+    public static float kpHeading = 0.1f;
+    public static float kdHeading = 0.01f * 5;
     public static float kCrosstrack = 1f;
     public static float kCrosstrackUrgent = 1.2f;
     public static float velDamping = 1f;
