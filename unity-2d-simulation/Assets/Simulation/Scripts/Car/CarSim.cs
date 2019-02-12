@@ -75,7 +75,7 @@ public class CarSim : MonoBehaviour
     private void ModifyGoal()
     {
         float x = Random.Range(10, 10);
-        float y = 3;
+        float y = 7;
         goal = new Pose(new Vector3(x, y, 0), transform.rotation);
         Debug.Log(string.Format("New Goal X: {0}", x));
         carController.goalPoseCallback(goal);
