@@ -12,7 +12,9 @@ public class DetectCars : MonoBehaviour {
     private string[] carPrefabs = { "Car_1", "Car_2", "Car_3" };
 
     private float wheelOffset = 0.4f;       // offset to apply to y-coord of car so bottom of wheels touch track
+    private float waypointScaling = 20f;    //real xMax = 2, yMax = 1, so scale to match virtual track - also in sim y = x and x = y
 
+    /*
     void Start () {
         carPoseSubscribers = new List<PoseStampedSubscriber>();
         connectors = new List<RosConnector>();
@@ -25,7 +27,7 @@ public class DetectCars : MonoBehaviour {
 
             //create a ros connector for each car
             RosConnector rosConnector = car.AddComponent(typeof(RosConnector)) as RosConnector;
-            rosConnector.RosBridgeServerUrl = "ws://10.215.110.153:9090";
+            rosConnector.RosBridgeServerUrl = "ws://129.97.69.100:9090";
             rosConnector.Timeout = 10;
             rosConnector.Protocol = RosConnector.Protocols.WebSocketSharp;
             rosConnector.Awake();
@@ -33,7 +35,7 @@ public class DetectCars : MonoBehaviour {
 
             // create a subscriber for each car
             PoseStampedSubscriber carPosSubscriber = car.AddComponent(typeof(PoseStampedSubscriber)) as PoseStampedSubscriber;
-            carPosSubscriber.Topic = "/car/" + i + "/pose/";
+            carPosSubscriber.Topic = "/car/1" + "/pose/";
             carPosSubscriber.TimeStep = 10;
             carPoseSubscribers.Add(carPosSubscriber);
 
@@ -48,7 +50,10 @@ public class DetectCars : MonoBehaviour {
             if (carPoseSubscribers[i].position != null && carPoseSubscribers[i].rotation != null)
             {
                 // update position of car in game
-                car.transform.position = new Vector3(carPoseSubscribers[i].position.x, carPoseSubscribers[i].position.y + wheelOffset, carPoseSubscribers[i].position.z);
+                float x = carPoseSubscribers[i].position.y * waypointScaling * -1;
+                float z = carPoseSubscribers[i].position.z * waypointScaling;
+
+                car.transform.position = new Vector3(carPoseSubscribers[i].position.x, wheelOffset, carPoseSubscribers[i].position.z);
                 car.transform.rotation = carPoseSubscribers[i].rotation;
             } else
             {
@@ -57,4 +62,5 @@ public class DetectCars : MonoBehaviour {
             }
         }
 	}
+    */
 }

@@ -7,30 +7,15 @@ public class TrackController : MonoBehaviour {
 
     private float vel;
     private Float64Subscriber trackVelSubscriber;
-    private RosConnector rosConnector;
 
     void Start () {
-        //create ros connector
-        rosConnector = gameObject.AddComponent(typeof(RosConnector)) as RosConnector;
-        rosConnector.RosBridgeServerUrl = "ws://10.215.110.153:9090";
-        rosConnector.Timeout = 10;
-        rosConnector.Protocol = RosConnector.Protocols.WebSocketSharp;
-        rosConnector.Awake();
-
-        while (rosConnector.RosSocket == null)
-        {
-            // wait for RosSocket to be created
-        }
-
-        //create track vel subscriber
-        trackVelSubscriber = gameObject.AddComponent(typeof(Float64Subscriber)) as Float64Subscriber;
-        trackVelSubscriber.Topic = "/treadmill/velocity";
-        trackVelSubscriber.TimeStep = 10;
+        trackVelSubscriber = gameObject.GetComponent(typeof(Float64Subscriber)) as Float64Subscriber;
     }
-	
-	void Update () {
+
+    void Update () {
         // Get track velocity from subscriber
         vel = trackVelSubscriber.messageData;
+        Debug.Log(vel);
         
         // Move the track in the x direction
         float offset = Time.time * vel;
