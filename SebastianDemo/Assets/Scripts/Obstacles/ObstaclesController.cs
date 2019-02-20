@@ -46,6 +46,8 @@ namespace PathfindingForCars
                 }
             }
 
+            //Remove any previous obstacles
+            Reset();
 
             //Generate obstacles (= center coordinates of cubes)
             AddObstacles();
@@ -57,7 +59,18 @@ namespace PathfindingForCars
             GenerateObstacleFlowField();
         }
 
-
+        public void Reset()
+        {
+            obstaclesPosList.Clear();
+            Object[] allObjects = FindObjectsOfType(typeof(GameObject));
+            foreach (GameObject obj in allObjects)
+            {
+                if (obj.transform.name == "Obstacle(Clone)")
+                {
+                    Destroy(obj);
+                }
+            }
+        }
 
         //Figure out which cells the obstacle touch
         private void CellObstacleDetection()
@@ -132,7 +145,7 @@ namespace PathfindingForCars
             float mapWidth = (float)PathfindingController.mapWidth;
 
             //How many cubes are we going to add?
-            int numberOfObstacles = 5;
+            int numberOfObstacles = 10;
 
             for (int i = 0; i < numberOfObstacles; i++)
             {
@@ -154,7 +167,7 @@ namespace PathfindingForCars
 
 
                     //Also add obstacles to all directions from the first cube
-                    int amount = 8;
+                    int amount = 1;
                     AddObstacles(center, Random.Range(0, amount), 1f, 0f);
                     AddObstacles(center, Random.Range(0, amount), -1f, 0f);
                     AddObstacles(center, Random.Range(0, amount), 0f, 1f);

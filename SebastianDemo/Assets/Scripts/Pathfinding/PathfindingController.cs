@@ -71,8 +71,8 @@ namespace PathfindingForCars
             targetCarTrans.rotation = egoCarData.GetCarTransform().rotation;
             targetCarData = targetCarTrans.GetComponent<CarData>();
 
-            Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
-            Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
+            //Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
+            //Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
         }
 
 
@@ -89,8 +89,8 @@ namespace PathfindingForCars
 
                 // temporary testing to see where a new CarData can be created only from position and rotation 
                 // Tried similar instantiation as GenerateHybridAStarPath() from HybridAStarAngle.cs
-                Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
-                Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
+                //Debug.Log(string.Format("Target car position: {0}", targetCarData.GetCarTransform().position));
+                //Debug.Log(string.Format("Target car rear wheel: {0}", targetCarData.GetRearWheelPos()));
 
                 //Check if the target car has a valid position
                 if (HasTargetCarValidPosition(targetCarTrans.position, heading, targetCarData))
@@ -288,7 +288,7 @@ namespace PathfindingForCars
         {
             float timeInSeconds = (endTime - startTime) / 1000f;
 
-            Debug.Log(text + " took " + timeInSeconds + " seconds");
+            //Debug.Log(text + " took " + timeInSeconds + " seconds");
         }
     }
 }

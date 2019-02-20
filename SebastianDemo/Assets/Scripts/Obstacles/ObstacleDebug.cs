@@ -130,7 +130,7 @@ namespace PathfindingForCars
                 }
             }
 
-            Debug.Log("Max distance flow field: " + maxDistance);
+            //Debug.Log("Max distance flow field: " + maxDistance);
 
 
             //Generate the colors

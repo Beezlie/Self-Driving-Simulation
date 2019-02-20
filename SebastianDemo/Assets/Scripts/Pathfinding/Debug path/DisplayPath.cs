@@ -73,7 +73,7 @@ namespace PathfindingForCars
         public void DisplaySearchTree(List<Node> expandedNodes)
         {
             //How many nodes did we expand?
-            Debug.Log("Expanded nodes: " + expandedNodes.Count);
+            //Debug.Log("Expanded nodes: " + expandedNodes.Count);
 
             //Display the Hybrid A* search tree with GL lines
             //Cant do that with a custom method because it has to be done in OnRenderObject()

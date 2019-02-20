@@ -238,7 +238,7 @@ namespace PathfindingForCars
                     {
                         found = true;
 
-                        Debug.Log("Found a path");
+                        //Debug.Log("Found a path");
 
                         finalNode = nextNode;
 

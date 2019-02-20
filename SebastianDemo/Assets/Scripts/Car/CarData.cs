@@ -12,7 +12,7 @@ namespace PathfindingForCars
         public Transform rearWheelTrans;
 
         //Engine power
-        private float maxMotorTorque = 1000f;
+        private float maxMotorTorque = 5000f;
         //Top speed in km/h
         private float maxSpeed = 200f;
         //Brakes

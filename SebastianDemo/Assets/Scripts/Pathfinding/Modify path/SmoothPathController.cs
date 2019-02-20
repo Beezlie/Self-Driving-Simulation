@@ -46,7 +46,7 @@ namespace PathfindingForCars
             }
             else
             {
-                Debug.Log("Couldnt smooth path");
+                //Debug.Log("Couldnt smooth path");
 
                 return finalPath;
             }

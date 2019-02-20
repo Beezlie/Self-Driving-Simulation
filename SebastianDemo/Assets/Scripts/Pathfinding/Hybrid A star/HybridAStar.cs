@@ -237,7 +237,7 @@ namespace PathfindingForCars
                     {
                         found = true;
 
-                        Debug.Log("Found a path");
+                        //Debug.Log("Found a path");
 
                         finalNode = nextNode;
 
@@ -268,7 +268,7 @@ namespace PathfindingForCars
                             //Stop looping - real Hybrid A* continues looping and just add this node as a node in the tree 
                             found = true;
 
-                            Debug.Log("Found a path with a fixed path algorithm");
+                            //Debug.Log("Found a path with a fixed path algorithm");
 
                             //Generate nodes along this path until we reach the goal
                             Node previousNode = nextNode;
