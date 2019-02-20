@@ -15,11 +15,7 @@ limitations under the License.
 
 <launch>
 
-	<node name="adas_listener" pkg="unity_communication" type="adas_listener.py" output="screen"/>
-	<node name="obstacle_listener" pkg="unity_communication" type="obstacle_listener.py" output="screen"/>
-	<node name="waypoint_updater" pkg="unity_communication" type="waypoint_updater.py" output="screen"/>
-	<node name="car_position_updater" pkg="unity_communication" type="car_position_updater.py" output="screen"/>
-	<node name="track_listener" pkg="unity_communication" type="track_listener.py" output="screen"/>
+	<node name="demo" pkg="unity_communication" type="demo.py" output="screen"/>
 	<node name="rqt_graph" pkg="rqt_graph" type="rqt_graph" output="screen" />
 
 </launch>
