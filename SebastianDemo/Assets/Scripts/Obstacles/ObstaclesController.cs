@@ -23,7 +23,18 @@ namespace PathfindingForCars
         //The flow field (potential field), which tells the number of cells to the closest obstacle from a cell
         public static int[,] distanceToClosestObstacle;
 
-
+        public void Reset()
+        {
+            obstaclesPosList.Clear();
+            Object[] allObjects = FindObjectsOfType(typeof(GameObject));
+            foreach (GameObject obj in allObjects)
+            {
+                if (obj.transform.name == "Obstacle(Clone)")
+                {
+                    Destroy(obj);
+                }
+            }
+        }
 
         public void InitObstacles()
         {
@@ -154,7 +165,7 @@ namespace PathfindingForCars
 
 
                     //Also add obstacles to all directions from the first cube
-                    int amount = 8;
+                    int amount = 1;
                     AddObstacles(center, Random.Range(0, amount), 1f, 0f);
                     AddObstacles(center, Random.Range(0, amount), -1f, 0f);
                     AddObstacles(center, Random.Range(0, amount), 0f, 1f);
