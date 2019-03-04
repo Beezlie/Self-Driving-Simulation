@@ -5,7 +5,7 @@ using RosSharp.RosBridgeClient;
 
 public class TrackSpeedUpdater : MonoBehaviour {
 
-    public float vel = 0f;
+    public float vel;
     private float throttle;
     private Vector3 linearVel;
     private TwistStampedSubscriber trackVelSubscriber;
@@ -20,6 +20,7 @@ public class TrackSpeedUpdater : MonoBehaviour {
 
     void Update () {
         // Start control loop if new velocity command given
+        /*
         if (linearVel != trackVelSubscriber.linearVel) {
             linearVel = trackVelSubscriber.linearVel;
             throttle = trackController.commandVelCallback(trackVelSubscriber.linearVel.z);
@@ -27,6 +28,7 @@ public class TrackSpeedUpdater : MonoBehaviour {
             vel = sys.Output(throttle);
             throttle = trackController.velCallback(vel);
         }
+        */
         
         // Move the track in the x direction
         float offset = Time.time * -1 * Mathf.Abs(vel);
