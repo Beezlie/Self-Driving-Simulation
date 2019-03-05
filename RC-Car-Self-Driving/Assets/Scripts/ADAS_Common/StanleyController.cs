@@ -107,24 +107,12 @@ public class StanleyController : LateralController
 
         prevHeadingError = headingError;
 
-        cte.Add(crosstrackError.ToString());
-        time.Add(Time.time.ToString());
-        WriteToFile();
-
         return headingCorrection + crosstrackCorrection; ;
     }
 
     public void reset()
     {
         prevHeadingError = 0f;
-    }
-
-    List<string> cte = new List<string>();
-    List<string> time = new List<string>();
-    public void WriteToFile()
-    {
-        System.IO.File.WriteAllLines(@"C:\Users\Angelo\FYDP\cte_data.txt", cte);
-        System.IO.File.WriteAllLines(@"C:\Users\Angelo\FYDP\time_data.txt", time);
     }
 }
 

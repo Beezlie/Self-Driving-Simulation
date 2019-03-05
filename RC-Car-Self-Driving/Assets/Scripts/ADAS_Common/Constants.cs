@@ -29,10 +29,10 @@ public static class Constants {
     public static float discontinuityThreshold = 0.05f;
     public static float iThreshold = 0.1f;
 
-    public static float kpHeading = 5f;
+    public static float kpHeading = 0.1f;
     public static float kdHeading = 0.1f;
-    public static float kCrosstrack = 1f;
-    public static float velDamping = 1f;
+    public static float kCrosstrack = 0.5f;
+    public static float velDamping = 10f;
     public static float axleDistance = 0.099f;
 
     public static float carSimVelK = 0.06f;
