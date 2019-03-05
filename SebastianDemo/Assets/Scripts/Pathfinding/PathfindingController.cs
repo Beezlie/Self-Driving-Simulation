@@ -50,10 +50,16 @@ namespace PathfindingForCars
             debugController = GetComponent<DebugController>();
         }
 
-
+        void ResetObstacles()
+        {
+            GetComponent<ObstaclesController>().Reset();
+            GetComponent<ObstaclesController>().InitObstacles();
+        }
 
         void Start()
         {
+            //for testing
+            InvokeRepeating("ResetObstacles", 0f, 10f);
             //Generate obstacles
             //Has to do it from this script or the obstacles might be created after this script has
             //finished and mess things up
