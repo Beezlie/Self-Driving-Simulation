@@ -19,6 +19,7 @@ public class EgoCarInterface : MonoBehaviour {
     private float angularVel = 0;
 
     // Car detection parameters
+    private List<Object> obstacles = new List<Object>();
     private int numLineSegments = 100;
     private float detectionRadius = 7.5f;
     LineRenderer line;
@@ -90,11 +91,15 @@ public class EgoCarInterface : MonoBehaviour {
 
     //TODO - create occupancy grid for sensing cars (with specific radius) - ML agent needs access to this
     //Search through all obstacles to find which fall within a radius of the car
-    public List<Object> DetectObstaclesWithinRadiusOfCar()
+    public List<Vector3> DetectObstaclesWithinRadiusOfCar()
     {
-        List<Object> obstacles = new List<Object>();
+        List<Vector3> obstaclePos = new List<Vector3>();
+        foreach (Object obj in obstacles)
+        {
 
-        return obstacles;
+        }
+
+        return obstaclePos;
     }
 
     //Reset vehicle position on collision
