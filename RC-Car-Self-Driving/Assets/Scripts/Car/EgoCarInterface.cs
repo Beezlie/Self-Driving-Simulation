@@ -13,8 +13,9 @@ public class EgoCarInterface : MonoBehaviour {
     private GameObject track;
 
     // Car info
+    private Vector3 goalPos;
     private CarState carState;
-    private Vector3 linearVel = new Vector3(0, 0, 0);
+    private Vector3 linearVel;
     private float angularVel = 0;
 
     // Car detection parameters
@@ -47,6 +48,7 @@ public class EgoCarInterface : MonoBehaviour {
 
         // Set initial car state
         carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
+        goalPos = transform.position;
 
         //Draw the lidar visualization
         line = gameObject.GetComponent<LineRenderer>();
@@ -55,15 +57,51 @@ public class EgoCarInterface : MonoBehaviour {
         DrawLidar();
     }
 
-    public void SetGoal(float z, float x)
+    public Transform GetCurrentTransform()
     {
-        carController.goalPoseCallback(new Pose(new Vector3(z, x, 0), transform.rotation));
+        return transform;
+    }
+
+    public Vector3 GetCurrentPosition()
+    {
+        return transform.position;
+    }
+
+    public float GetCurrentHeading()
+    {
+        return carState.psi;
+    }
+
+    private float GetCurrentSpeed()
+    {
+        return carState.dz;
+    }
+
+    public void SetTargetPosition(Vector3 position)
+    {
+        carController.goalPoseCallback(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
+        goalPos = position;
+    }
+
+    public Vector3 GetTargetPosition()
+    {
+        return goalPos;
     }
 
     //TODO - create occupancy grid for sensing cars (with specific radius) - ML agent needs access to this
-    public void DetectCars()
+    //Search through all obstacles to find which fall within a radius of the car
+    public List<Object> DetectObstaclesWithinRadiusOfCar()
     {
-        //Fill this in
+        List<Object> obstacles = new List<Object>();
+
+        return obstacles;
+    }
+
+    //Reset vehicle position on collision
+    private void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log("Collision detected");
+        transform.position = new Vector3(10, 0, 10);
     }
 
     private void CalculateControls()
