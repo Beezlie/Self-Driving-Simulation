@@ -57,5 +57,5 @@ public static class Constants {
     public static float targetHz = 20f;
 
     //Goal coordinates for PID tuning
-    public static Vector3 goalCoordinates = new Vector3(10f, 1f, 10f);
+    public static Vector3 goalCoordinates = new Vector3(15f, 1f, 10f);
 }

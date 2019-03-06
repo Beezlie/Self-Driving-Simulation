@@ -49,6 +49,7 @@ public class EgoCarInterface : MonoBehaviour {
         // Set initial car state
         carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
         goalPos = transform.position;
+        SetTargetPosition(goalPos);
 
         //Draw the lidar visualization
         line = gameObject.GetComponent<LineRenderer>();

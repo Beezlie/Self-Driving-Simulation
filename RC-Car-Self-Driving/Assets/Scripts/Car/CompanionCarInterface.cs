@@ -70,8 +70,10 @@ public class CompanionCarInterface : MonoBehaviour
 
     private void UpdateGoal()
     {
-        float x = Random.Range(0, 20);
-        float z = Random.Range(0, 40);
+        //float x = Mathf.Clamp(Random.Range(transform.position.x - 3, transform.position.x + 3), 0, 20);
+        //float z = Mathf.Clamp(Random.Range(transform.position.z - 20, transform.position.x + 20), 0, 40);
+        float x = 5f;
+        float z = 20f;
         Pose goal = new Pose(new Vector3(z, x, 0), transform.rotation);
         Debug.Log(string.Format("companion car goal: ({0}, {1})", z, x));
         carController.goalPoseCallback(goal);
