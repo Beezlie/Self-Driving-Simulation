@@ -71,8 +71,11 @@ public class EgoCarInterface : MonoBehaviour {
         Collider[] obstacles = Physics.OverlapSphere(transform.position, detectionRadius);
         foreach (Collider collider in obstacles)
         {
-            obstaclePos.Add(collider.transform.position);
-            Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
+            if (collider is BoxCollider && collider.transform.position != transform.position)
+            {
+                obstaclePos.Add(collider.transform.position);
+                Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
+            }
         }
         return obstaclePos;
     }
