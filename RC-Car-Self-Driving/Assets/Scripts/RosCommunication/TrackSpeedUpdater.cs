@@ -31,8 +31,8 @@ public class TrackSpeedUpdater : MonoBehaviour {
         }
         */
         
-        // Move the track in the x direction
-        float offset = Time.time * -1 * Mathf.Abs(vel);
+        // Move the track in the z direction
+        float offset = Time.time * vel;
         GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, offset);
     }
 }

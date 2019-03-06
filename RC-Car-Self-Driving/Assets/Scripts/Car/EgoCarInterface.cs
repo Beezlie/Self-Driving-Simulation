@@ -74,7 +74,6 @@ public class EgoCarInterface : MonoBehaviour {
             obstaclePos.Add(collider.transform.position);
             Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
         }
-
         return obstaclePos;
     }
 
@@ -86,8 +85,6 @@ public class EgoCarInterface : MonoBehaviour {
         {
             Debug.Log("The track object was not found.");
         }
-        Debug.Log(string.Format("track width: {0}", GetTrackWidth()));
-        Debug.Log(string.Format("track length: {0}", GetTrackLength()));
     }
 
     private void Start()
@@ -118,8 +115,12 @@ public class EgoCarInterface : MonoBehaviour {
     //Reset vehicle position on collision
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log("Collision detected");
-        transform.position = new Vector3(0, 1, 0);
+        Vector3 resetPosition = new Vector3(0, 1, 0);
+        carState.x = resetPosition.x;
+        carState.z = resetPosition.z;
+        goalPos = resetPosition;
+        SetTargetPosition(goalPos);
+        Debug.Log(string.Format("Collision detected.  Resetting EgoCar position to {0}", resetPosition));
     }
 
     private void CalculateControls()
