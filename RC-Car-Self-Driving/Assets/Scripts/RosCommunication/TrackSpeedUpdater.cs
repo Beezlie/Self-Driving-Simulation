@@ -13,6 +13,7 @@ public class TrackSpeedUpdater : MonoBehaviour {
     private AsymmetricFirstOrderSystem sys;
 
     void Start () {
+        // Initialize system
         trackVelSubscriber = gameObject.GetComponent(typeof(TwistStampedSubscriber)) as TwistStampedSubscriber;
         trackController = new TrackController();
         sys = new AsymmetricFirstOrderSystem(Constants.trackSimK, Constants.trackSimIncreaseTau, Constants.trackSimDecreaseTau, Constants.targetHz, 0f);
@@ -30,8 +31,8 @@ public class TrackSpeedUpdater : MonoBehaviour {
         }
         */
         
-        // Move the track in the x direction
-        float offset = Time.time * -1 * Mathf.Abs(vel);
+        // Move the track in the z direction
+        float offset = Time.time * vel;
         GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, offset);
     }
 }

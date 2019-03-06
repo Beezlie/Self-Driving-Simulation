@@ -120,14 +120,14 @@ public class CarController
         }
 
         //TODO - check to make sure this is doing same thing as before
-        Debug.Log(string.Format("Observed pose of car: {0}", pose));
+        //Debug.Log(string.Format("Observed pose of car: {0}", pose));
 
         // Velocity at which we'd like to approach the goal.
         float velCommand = posController.commandStep(0, pose.position.x, 1 / Constants.targetHz, true);
 
         // Set goal to approach the goal AND maintain position.
         desiredVel = velCommand + treadmillVel;
-        Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", desiredVel));
+        //Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", desiredVel));
         velController.setGoal(desiredVel);
 
         // Explicit decision: No reset of D term calculation. It's not user-controlled and is assumed to be "reasonably continuous."
@@ -171,7 +171,7 @@ public class CarController
     public void treadmillVelCallback(GameObject treadmill)
     {
         treadmillVel = treadmill.gameObject.GetComponent<TrackSpeedUpdater>().vel;
-        Debug.Log(string.Format("treadmill speed: {0}", treadmillVel));
+        //Debug.Log(string.Format("treadmill speed: {0}", treadmillVel));
     }
 
     private void resetCallback()
