@@ -23,39 +23,14 @@ public class EgoCarInterface : MonoBehaviour {
     private float detectionRadius = 7.5f;
     LineRenderer line;
 
-    void Awake()
+    public float GetTrackWidth()
     {
-        // Find track object so velocity can be fed to car controller
-        track = GameObject.Find("MainTrack");
-        if (track == null)
-        {
-            Debug.Log("The track object was not found.");
-        }
+        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.x;
     }
 
-    void Start()
+    public float GetTrackLength()
     {
-        InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
-
-        //Get dimensions of car sprite
-        float length = GetComponentInChildren<Renderer>().bounds.size.x;
-        float width = GetComponentInChildren<Renderer>().bounds.size.y;
-
-        //Initialize the controllers and system
-        carController = new CarController(length);
-        steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
-        throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
-
-        // Set initial car state
-        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
-        goalPos = transform.position;
-        SetTargetPosition(goalPos);
-
-        //Draw the lidar visualization
-        line = gameObject.GetComponent<LineRenderer>();
-        line.SetVertexCount(numLineSegments + 1);
-        line.useWorldSpace = false;
-        DrawLidar();
+        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.z;
     }
 
     public Transform GetCurrentTransform()
@@ -103,11 +78,48 @@ public class EgoCarInterface : MonoBehaviour {
         return obstaclePos;
     }
 
+    private void Awake()
+    {
+        // Find track object so velocity can be fed to car controller
+        track = GameObject.Find("MainTrack");
+        if (track == null)
+        {
+            Debug.Log("The track object was not found.");
+        }
+        Debug.Log(string.Format("track width: {0}", GetTrackWidth()));
+        Debug.Log(string.Format("track length: {0}", GetTrackLength()));
+    }
+
+    private void Start()
+    {
+        InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
+
+        //Get dimensions of car sprite
+        float length = GetComponentInChildren<Renderer>().bounds.size.x;
+        float width = GetComponentInChildren<Renderer>().bounds.size.y;
+
+        //Initialize the controllers and system
+        carController = new CarController(length);
+        steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
+        throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
+
+        // Set initial car state
+        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
+        goalPos = transform.position;
+        SetTargetPosition(goalPos);
+
+        //Draw the lidar visualization
+        line = gameObject.GetComponent<LineRenderer>();
+        line.SetVertexCount(numLineSegments + 1);
+        line.useWorldSpace = false;
+        DrawLidar();
+    }
+
     //Reset vehicle position on collision
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("Collision detected");
-        transform.position = new Vector3(10, 0, 5);
+        transform.position = new Vector3(0, 1, 0);
     }
 
     private void CalculateControls()
