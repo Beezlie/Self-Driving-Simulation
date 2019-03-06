@@ -13,7 +13,9 @@ public class CarState
     public float dpsi;
     public float dv;
 
-    private float acceleration = 3;
+    private float acceleration = 1f;
+    private float betaMultiplier = 25f;
+
     private float lr;
     private float lf;
 
@@ -37,28 +39,27 @@ public class CarState
         float beta = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));   //steer is in radians
 
         // calculate incremental changes
-        float vnew = v * acceleration;
-        dz = vnew * Mathf.Cos(psi + beta) - trackVel;
-        dx = vnew * Mathf.Sin(psi + beta);
-        dpsi = (vnew / lr) * Mathf.Sin(beta);
-        dv = 0;
+        dz = v * Mathf.Cos(psi + beta) - trackVel;
+        dx = v * Mathf.Sin(psi + beta * betaMultiplier);
+        dpsi = (v / lr) * Mathf.Sin(beta);
 
         // update state values
         z = z + dz * dt;
         x = x + dx * dt;
         psi = psi + dpsi * dt;
+        v = throttle * acceleration;       //might need to multiply by some constant here
 
-        v = throttle;       //might need to multiply by some constant here
-
+        /*
         Debug.Log(string.Format("lr = lf: {0}", lr));
         Debug.Log(string.Format("beta: {0}", beta));
-        Debug.Log(string.Format("dx: {0}", dz));
-        Debug.Log(string.Format("dy: {0}", dx));
+        Debug.Log(string.Format("dz: {0}", dz));
+        Debug.Log(string.Format("dx: {0}", dx));
         Debug.Log(string.Format("dpsi: {0}", dpsi));
         Debug.Log(string.Format("dv: {0}", dv));
         Debug.Log(string.Format("z: {0}", z));
         Debug.Log(string.Format("x: {0}", x));
         Debug.Log(string.Format("psi: {0}", psi));
         Debug.Log(string.Format("v: {0}", v));
+        */
     }
 }

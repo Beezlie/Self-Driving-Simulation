@@ -72,30 +72,33 @@ public class StanleyController : LateralController
         if (!goalReceived) {
             return 0f;
         }
-
-        Debug.Log(string.Format("observedPose: {0}", observedPose));
+        /*
+        Debug.Log(string.Format("linearVel in command step: {0}", linearVel));
+        Debug.Log(string.Format("angularvel in command step: {0}", angularVel));
+        Debug.Log(string.Format("observedPose in command step: {0}", observedPose));
+        */
 
         float yaw = getYaw(observedPose.rotation.eulerAngles);
-        Debug.Log(string.Format("yaw in command step: {0}", yaw));
+        //Debug.Log(string.Format("yaw in command step: {0}", yaw.ToString("F10")));
 
         float headingError = getYaw(goal.rotation.eulerAngles) - yaw;
-        Debug.Log(string.Format("headingError: {0}", headingError));
+        //Debug.Log(string.Format("headingError: {0}", headingError.ToString("F10")));
 
         float headingCorrection = kPHeading * headingError + kDHeading * ((headingError - prevHeadingError) / dt);
-        Debug.Log(string.Format("headingCorrection: {0}", headingCorrection));
+        //Debug.Log(string.Format("headingCorrection: {0}", headingCorrection.ToString("F10")));
 
         // Incoming pose and velocity - convert to front axle.
         Pose frontPose = new Pose(new Vector3(observedPose.position.x + wheelbase * Mathf.Cos(yaw), observedPose.position.y + wheelbase * Mathf.Sin(yaw), 0), observedPose.rotation);
-        Debug.Log(string.Format("frontPose: {0}", frontPose));
+        //Debug.Log(string.Format("frontPose: {0}", frontPose));
 
         Vector3 frontLinearVel = new Vector3(linearVel.x + angularVel * Mathf.Sin(yaw), linearVel.y + angularVel * Mathf.Cos(yaw), 0);
-        Debug.Log(string.Format("frontLinearVel: {0}", frontLinearVel));
+        //Debug.Log(string.Format("frontLinearVel: {0}", frontLinearVel));
 
         Vector3 intersection = findIntersection(frontPose.position, goal.position, getYaw(goal.rotation.eulerAngles));
-        Debug.Log(string.Format("intersection: {0}", intersection));
+        //Debug.Log(string.Format("intersection: {0}", intersection));
 
         float crosstrackError = Vector3.Distance(intersection, frontPose.position);
-        Debug.Log(string.Format("cross track error: {0}", crosstrackError));
+        //Debug.Log(string.Format("cross track error: {0}", crosstrackError));
 
         // Goal line always points forward - so, if pose.y is bigger, pose is to the left.
         if (goal.position.y < frontPose.position.y) {
@@ -103,7 +106,7 @@ public class StanleyController : LateralController
         }
 
         float crosstrackCorrection = Mathf.Atan2(kCrosstrack * crosstrackError, velDamping + Vector3.Magnitude(frontLinearVel));
-        Debug.Log(string.Format("cross track correction: {0}", crosstrackCorrection));
+        //Debug.Log(string.Format("cross track correction: {0}", crosstrackCorrection));
 
         prevHeadingError = headingError;
 

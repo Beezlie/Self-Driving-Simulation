@@ -19,7 +19,6 @@ public class EgoCarInterface : MonoBehaviour {
     private float angularVel = 0;
 
     // Car detection parameters
-    private List<Object> obstacles = new List<Object>();
     private int numLineSegments = 100;
     private float detectionRadius = 7.5f;
     LineRenderer line;
@@ -89,14 +88,15 @@ public class EgoCarInterface : MonoBehaviour {
         return goalPos;
     }
 
-    //TODO - create occupancy grid for sensing cars (with specific radius) - ML agent needs access to this
-    //Search through all obstacles to find which fall within a radius of the car
+    //Search through all obstacles to find which fall within a detection radius of the car
     public List<Vector3> DetectObstaclesWithinRadiusOfCar()
     {
         List<Vector3> obstaclePos = new List<Vector3>();
-        foreach (Object obj in obstacles)
+        Collider[] obstacles = Physics.OverlapSphere(transform.position, detectionRadius);
+        foreach (Collider collider in obstacles)
         {
-
+            obstaclePos.Add(collider.transform.position);
+            Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
         }
 
         return obstaclePos;
@@ -106,7 +106,7 @@ public class EgoCarInterface : MonoBehaviour {
     private void OnCollisionEnter(Collision collision)
     {
         Debug.Log("Collision detected");
-        transform.position = new Vector3(10, 0, 10);
+        transform.position = new Vector3(10, 0, 5);
     }
 
     private void CalculateControls()
