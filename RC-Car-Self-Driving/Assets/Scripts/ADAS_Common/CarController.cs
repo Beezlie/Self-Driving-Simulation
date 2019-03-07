@@ -9,13 +9,9 @@ public class CarController
     private StanleyController headController;
 
     private float velKFeedforward;
-    private float treadmillVel;
     private float posIThreshold;
     private float discontinuityThreshold;
     private bool goalReceived;
-
-    //temporary
-    public float desiredVel = 0;
 
     public class PIDParams
     {
@@ -111,24 +107,18 @@ public class CarController
         headController.setVelDamping(velDamping);
     }
 
-    //TODO - make this private once ROS# implemented and pass in ROS Pose instead of system Pose
-    public CarCommand syncCallback(Pose pose, Vector2 linearVel, float angularVel)
+    public CarCommand calculateControls(Pose pose, Vector2 linearVel, float angularVel, float treadmillVel)
     {
         if (!goalReceived)
         {
             return new CarCommand(0, 0);
         }
 
-        //TODO - check to make sure this is doing same thing as before
-        //Debug.Log(string.Format("Observed pose of car: {0}", pose));
-
         // Velocity at which we'd like to approach the goal.
         float velCommand = posController.commandStep(0, pose.position.x, 1 / Constants.targetHz, true);
 
         // Set goal to approach the goal AND maintain position.
-        desiredVel = velCommand + treadmillVel;
-        //Debug.Log(string.Format("Velocity to approach the goal with after factoring n treadmill vel: {0}", desiredVel));
-        velController.setGoal(desiredVel);
+        velController.setGoal(velCommand + treadmillVel);
 
         // Explicit decision: No reset of D term calculation. It's not user-controlled and is assumed to be "reasonably continuous."
         /*
@@ -145,12 +135,10 @@ public class CarController
                                                         angularVel,
                                                         1 / Constants.targetHz);
 
-        //TODO - now have to send throttle and head commands somewhere to control the car
         return new CarCommand(headCommand, throtCommand);
     }
 
-    //TODO - make this private once ROS# implemented
-    public void goalPoseCallback(Pose goal)
+    public void setNewGoalPosition(Pose goal)
     {
         headController.setGoal(goal);
 
@@ -167,14 +155,8 @@ public class CarController
         goalReceived = true;
     }
 
-    // TODO - fix this once using ROS# and make private
-    public void treadmillVelCallback(GameObject treadmill)
-    {
-        treadmillVel = treadmill.gameObject.GetComponent<TrackSpeedUpdater>().vel;
-        //Debug.Log(string.Format("treadmill speed: {0}", treadmillVel));
-    }
-
-    private void resetCallback()
+    //TODO - figure out when this is called in the lab code
+    private void ResetController()
     {
         Debug.Log("Resetting controller.");
         posController.reset();

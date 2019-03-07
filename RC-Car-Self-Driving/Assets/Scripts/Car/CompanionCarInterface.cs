@@ -21,7 +21,7 @@ public class CompanionCarInterface : MonoBehaviour
 
     public void SetTargetPosition(Vector3 position)
     {
-        carController.goalPoseCallback(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
+        carController.setNewGoalPosition(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
         goalPos = position;
         Debug.Log(string.Format("Companion car target position set: {0}.", goalPos));
     }
@@ -34,7 +34,7 @@ public class CompanionCarInterface : MonoBehaviour
     private void Awake()
     {
         // Find track object so velocity can be fed to car controller
-        track = GameObject.Find("MainTrack");
+        track = GameObject.Find("TrackData");
         if (track == null)
         {
             Debug.Log("The track object was not found.");
@@ -43,8 +43,7 @@ public class CompanionCarInterface : MonoBehaviour
 
     private void Start()
     {
-        //InvokeRepeating("UpdateGoal", 0f, 10f);
-        InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
+        InvokeRepeating("UpdateCar", 0f, 1 / Constants.targetHz);
 
         //Get dimensions of car sprite
         float length = GetComponentInChildren<Renderer>().bounds.size.x;
@@ -58,33 +57,18 @@ public class CompanionCarInterface : MonoBehaviour
         carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
     }
 
-    private void CalculateControls()
-    {
-        // Receive feedback of the current treadmill velocity
-        carController.treadmillVelCallback(track);      // temporary
-
-        //temporary
-        Pose convertedCoordinatesPose = new Pose(new Vector3(transform.position.z, transform.position.x, 0), transform.rotation);
-        Vector2 convertedCoordinatesLinearVel = new Vector2(linearVel.z, linearVel.x);
-        CarController.CarCommand command = carController.syncCallback(convertedCoordinatesPose, convertedCoordinatesLinearVel, angularVel);
-
-        //TODO - figure out how to use throttle and steer to move the car
-        carCommandCallback(command);
-
-        UpdateCar();
-    }
-
-    // TODO - fix this once using ROS#
-    private void carCommandCallback(CarController.CarCommand command)
-    {
-        steer = steerSys.Output(command.steer);
-        throttle = throttleSys.Output(command.throttle);
-    }
-
     void UpdateCar()
     {
+        //Get updated track velocity
         float dt = (1 / Constants.targetHz);
-        float trackVel = track.gameObject.GetComponent<TrackSpeedUpdater>().vel;
+        float trackVel = track.gameObject.GetComponent<TrackSpeedSubscriber>().GetVelocity();
+
+        //Calculate car controls
+        Pose convertedCoordinatesPose = new Pose(new Vector3(transform.position.z, transform.position.x, 0), transform.rotation);
+        Vector2 convertedCoordinatesLinearVel = new Vector2(linearVel.z, linearVel.x);
+        CarController.CarCommand command = carController.calculateControls(convertedCoordinatesPose, convertedCoordinatesLinearVel, angularVel, trackVel);
+        steer = steerSys.Output(command.steer);
+        throttle = throttleSys.Output(command.throttle);
 
         //Update bicycle model
         carState.UpdateState(throttle, steer, dt, trackVel);
@@ -94,7 +78,6 @@ public class CompanionCarInterface : MonoBehaviour
         float newAngle = (carState.psi * Mathf.Rad2Deg);
         Quaternion rotation = Quaternion.Euler(0, (carState.psi * Mathf.Rad2Deg), 0); 
         transform.rotation = rotation;
-
         linearVel = new Vector3(carState.dx, 0, carState.dz);
         angularVel = carState.dv;
     }

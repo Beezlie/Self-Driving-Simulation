@@ -17,8 +17,7 @@ public class TrackController {
         controller = new PIDController(Constants.pTrack, Constants.iTrack, Constants.dTrack, Constants.throttleCommandMin, Constants.throttleCommandMax);
     }
 
-    //TODO - make this private void and publish throttle once ROS# communication implemented
-    public float commandVelCallback(float goal)
+    public float SetGoalVelocity(float goal)
     {
         controller.setGoal(goal);
 
@@ -29,8 +28,7 @@ public class TrackController {
         return throttle;
     }
 
-    //TODO - make this private void and publish throttle once ROS# communication implemented
-    public float velCallback(float trackVel)
+    public float GetTreadmillThrottle(float trackVel)
     {
         float throt;
         float c = controller.commandStep(calculateFeedforward(controller.getGoal()), trackVel, 1 / Constants.targetHz, true);

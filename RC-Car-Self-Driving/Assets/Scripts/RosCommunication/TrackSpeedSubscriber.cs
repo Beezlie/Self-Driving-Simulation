@@ -3,36 +3,37 @@ using System.Collections.Generic;
 using UnityEngine;
 using RosSharp.RosBridgeClient;
 
-public class TrackSpeedUpdater : MonoBehaviour {
+public class TrackSpeedSubscriber : MonoBehaviour {
 
-    public float vel;
+    private float vel = 0.8f;
     private float throttle;
     private Vector3 linearVel;
     private TwistStampedSubscriber trackVelSubscriber;
     private TrackController trackController;
     private AsymmetricFirstOrderSystem sys;
 
-    void Start () {
+    public float GetVelocity()
+    {
+        return vel;
+    }
+
+    private void Start () {
         // Initialize system
         trackVelSubscriber = gameObject.GetComponent(typeof(TwistStampedSubscriber)) as TwistStampedSubscriber;
         trackController = new TrackController();
         sys = new AsymmetricFirstOrderSystem(Constants.trackSimK, Constants.trackSimIncreaseTau, Constants.trackSimDecreaseTau, Constants.targetHz, 0f);
     }
 
-    void Update () {
-        // Start control loop if new velocity command given
+    private void Update () {
         /*
+        // Start control loop if new velocity command given
         if (linearVel != trackVelSubscriber.linearVel) {
             linearVel = trackVelSubscriber.linearVel;
-            throttle = trackController.commandVelCallback(trackVelSubscriber.linearVel.z);
+            throttle = trackController.SetGoalVelocity(trackVelSubscriber.linearVel.z);
         } else {
             vel = sys.Output(throttle);
-            throttle = trackController.velCallback(vel);
+            throttle = trackController.GetTreadmillThrottle(vel);
         }
         */
-        
-        // Move the track in the z direction
-        float offset = Time.time * vel;
-        GetComponent<Renderer>().material.mainTextureOffset = new Vector2(0, offset);
     }
 }

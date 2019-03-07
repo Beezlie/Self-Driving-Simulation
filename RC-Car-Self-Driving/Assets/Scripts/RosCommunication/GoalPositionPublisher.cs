@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using RosSharp.RosBridgeClient;
 
-public class SendGoalPosition : MonoBehaviour {
+public class GoalPositionPublisher : MonoBehaviour {
     private PoseStampedPublisher goalPublisher;
 	
 	private void Start () {
