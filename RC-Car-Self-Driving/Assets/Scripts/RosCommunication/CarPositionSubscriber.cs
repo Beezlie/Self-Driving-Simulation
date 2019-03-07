@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using RosSharp.RosBridgeClient;
 
-public class UpdateCarPosition : MonoBehaviour {
+public class CarPositionSubscriber : MonoBehaviour {
 
     PoseStampedSubscriber sub;
     private float wheelOffset = 0.8f;       // offset to apply to y-coord of car so bottom of wheels touch track

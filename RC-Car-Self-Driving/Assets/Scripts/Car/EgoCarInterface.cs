@@ -12,7 +12,8 @@ public class EgoCarInterface : Agent {
     private AsymmetricFirstOrderSystem throttleSys;
     private float steer;        // in radians       
     private float throttle;     // in percentage
-    private GameObject track;
+    private GameObject trackData;
+    private GameObject road;
 
     // Car info
     private Vector3 goalPos;
@@ -27,12 +28,12 @@ public class EgoCarInterface : Agent {
 
     public float GetTrackWidth()
     {
-        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.x;
+        return road.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
     }
 
     public float GetTrackLength()
     {
-        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.z;
+        return road.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
     }
 
     public Transform GetCurrentTransform()
@@ -57,7 +58,7 @@ public class EgoCarInterface : Agent {
 
     public void SetTargetPosition(Vector3 position)
     {
-        carController.goalPoseCallback(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
+        carController.setNewGoalPosition(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
         goalPos = position;
     }
 
@@ -73,8 +74,11 @@ public class EgoCarInterface : Agent {
         Collider[] obstacles = Physics.OverlapSphere(transform.position, detectionRadius);
         foreach (Collider collider in obstacles)
         {
-            obstaclePos.Add(collider.transform.position);
-            Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
+            if (collider is BoxCollider && collider.transform.position != transform.position)
+            {
+                obstaclePos.Add(collider.transform.position);
+                Debug.Log(string.Format("obstacle position: {0}", collider.transform.position));
+            }
         }
         return obstaclePos;
     }
@@ -82,16 +86,21 @@ public class EgoCarInterface : Agent {
     private void Awake()
     {
         // Find track object so velocity can be fed to car controller
-        track = GameObject.Find("MainTrack");
-        if (track == null)
+        trackData = GameObject.Find("TrackData");
+        if (trackData == null)
         {
-            Debug.Log("The track object was not found.");
+            Debug.Log("The trackData object was not found.");
+        }
+        road = GameObject.Find("Road Piece");
+        if (road == null)
+        {
+            Debug.Log("The Road Piece object was not found.");
         }
     }
 
     private void Start()
     {
-        InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
+        InvokeRepeating("UpdateCar", 0f, 1 / Constants.targetHz);
 
         //Get dimensions of car sprite
         float length = GetComponentInChildren<Renderer>().bounds.size.x;
@@ -112,6 +121,9 @@ public class EgoCarInterface : Agent {
         line.SetVertexCount(numLineSegments + 1);
         line.useWorldSpace = false;
         DrawLidar();
+
+        Debug.Log(string.Format("track width {0}", GetTrackWidth()));
+        Debug.Log(string.Format("track length {0}", GetTrackLength()));
     }
 
     //Reset vehicle position on collision
@@ -125,29 +137,20 @@ public class EgoCarInterface : Agent {
         Debug.Log(string.Format("Collision detected.  Resetting EgoCar position to {0}", resetPosition));
     }
 
-    private void CalculateControls()
+    void UpdateCar()
     {
-        // Receive feedback of the current treadmill velocity
-        carController.treadmillVelCallback(track);      // temporary
+        //Get updated track velocity
+        float dt = (1 / Constants.targetHz);
+        float trackVel = trackData.gameObject.GetComponent<TrackSpeedSubscriber>().GetVelocity();
 
-        //temporary
+        //Calculate car controls
         Pose convertedCoordinatesPose = new Pose(new Vector3(transform.position.z, transform.position.x, 0), transform.rotation);
         Vector2 convertedCoordinatesLinearVel = new Vector2(linearVel.z, linearVel.x);
-        CarController.CarCommand command = carController.syncCallback(convertedCoordinatesPose, convertedCoordinatesLinearVel, angularVel);
-
-        //Update car controls from PID/Stanley Controllers
+        CarController.CarCommand command = carController.calculateControls(convertedCoordinatesPose, convertedCoordinatesLinearVel, angularVel, trackVel);
         steer = steerSys.Output(command.steer);
         throttle = throttleSys.Output(command.throttle);
 
-        UpdateCar();
-    }
-
-    private void UpdateCar()
-    {
-        float dt = (1 / Constants.targetHz);
-        float trackVel = track.gameObject.GetComponent<TrackSpeedUpdater>().vel;
-
-        //Update kinematic bicycle model with new state
+        //Update bicycle model
         carState.UpdateState(throttle, steer, dt, trackVel);
 
         //Update the state of the car sprite
@@ -155,10 +158,8 @@ public class EgoCarInterface : Agent {
         float newAngle = (carState.psi * Mathf.Rad2Deg);
         Quaternion rotation = Quaternion.Euler(0, (carState.psi * Mathf.Rad2Deg), 0);
         transform.rotation = rotation;
-
-        //Update the sprite's velocity
         linearVel = new Vector3(carState.dx, 0, carState.dz);
-        angularVel = carState.dv;       //is this right???
+        angularVel = carState.dv;
     }
 
     // Draw circle around car representing detection range of Lidar sensor
