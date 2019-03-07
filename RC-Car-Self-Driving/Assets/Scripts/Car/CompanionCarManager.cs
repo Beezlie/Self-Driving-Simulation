@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class CompanionCarController : MonoBehaviour {
+public class CompanionCarManager : MonoBehaviour {
 
     public int numCompanionCars = 2;        //2 by default
     private List<GameObject> companionCars;

@@ -1,29 +1,31 @@
 ﻿using UnityEngine;
 using RosSharp.RosBridgeClient;
 
-public class GoalPositionPublisher : MonoBehaviour {
+public class GoalPositionPublisher : MonoBehaviour
+{
     private PoseStampedPublisher goalPublisher;
-	
-	private void Start () {
-        // Attach pose stamped publisher to object
-        goalPublisher = gameObject.AddComponent(typeof(PoseStampedPublisher)) as PoseStampedPublisher;
-        goalPublisher.Topic = "/car/1/pose";
+    private GameObject egoCar;
 
-        // Create ROS Connector to establish websocket
-        RosConnector rosConnector = gameObject.AddComponent(typeof(RosConnector)) as RosConnector;
-        rosConnector.RosBridgeServerUrl = "ws://129.97.69.100:9090";    //lab base station computer IP address
-        rosConnector.Protocol = RosConnector.Protocols.WebSocketSharp;
-	}
-	
-	// Called once per frame
-	private void Update () {
-        //Publish this objects position + rotation to RC car
-        goalPublisher.PublishedTransform = transform;
-	}
+    private void Awake()
+    {
+        egoCar = GameObject.Find("EgoCar");
+        if (egoCar == null)
+        {
+            Debug.Log("The EgoCar object was not found.");
+        }
+    }
 
-    public void SetGoal(Pose goal) {
-        transform.position = new Vector3(goal.position.x, goal.position.y, goal.position.z);
-        transform.rotation = new Quaternion(goal.rotation.x, goal.rotation.y, goal.rotation.z, goal.rotation.w);
+    private void Start()
+    {
+        // Initialize pose publisher
+        goalPublisher = gameObject.GetComponent(typeof(PoseStampedPublisher)) as PoseStampedPublisher;
+    }
+
+    private void Update()
+    {
+        //Publish the EgoCar's goal pose
+        goalPublisher.PublishedTransform.position = egoCar.GetComponent<EgoCarInterface>().GetTargetPosition();
+        goalPublisher.PublishedTransform.rotation = egoCar.transform.rotation;
     }
 }
 

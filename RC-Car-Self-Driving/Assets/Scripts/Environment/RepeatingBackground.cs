@@ -19,7 +19,7 @@ public class RepeatingBackground : MonoBehaviour {
     void Update () {
         //Move object with same velocity as the track
         float trackVel = trackData.gameObject.GetComponent<TrackSpeedSubscriber>().GetVelocity();
-        float offset = Time.deltaTime * trackVel * 10;
+        float offset = Time.deltaTime * trackVel * 20;
         transform.position = new Vector3(transform.position.x, transform.position.y, transform.position.z - offset);
 
         //Check if the difference along the z axis between the main Camera and the position of the object this is attached to is greater than groundHorizontalLength.
