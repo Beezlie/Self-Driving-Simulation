@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 //references https://bitbucket.org/dshin-uwaterloo/adas-car-on-treadmill-v2/src/master/src/vrep_sim/src/sim_car.cpp
-public class CarSim : MonoBehaviour
+public class TuningCarInterface : MonoBehaviour
 {
     // Car Controls
     private CarController carController;

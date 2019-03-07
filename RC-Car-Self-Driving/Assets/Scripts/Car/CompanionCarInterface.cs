@@ -14,11 +14,24 @@ public class CompanionCarInterface : MonoBehaviour
     private GameObject track;
 
     // Car info
+    private Vector3 goalPos;
     private CarState carState;
     private Vector3 linearVel = new Vector3(0, 0, 0);
     private float angularVel = 0;
 
-    void Awake()
+    public void SetTargetPosition(Vector3 position)
+    {
+        carController.goalPoseCallback(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
+        goalPos = position;
+        Debug.Log(string.Format("Companion car target position set: {0}.", goalPos));
+    }
+
+    public Vector3 GetTargetPosition()
+    {
+        return goalPos;
+    }
+
+    private void Awake()
     {
         // Find track object so velocity can be fed to car controller
         track = GameObject.Find("MainTrack");
@@ -28,9 +41,9 @@ public class CompanionCarInterface : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
-        InvokeRepeating("UpdateGoal", 0f, 10f);
+        //InvokeRepeating("UpdateGoal", 0f, 10f);
         InvokeRepeating("CalculateControls", 0f, 1 / Constants.targetHz);
 
         //Get dimensions of car sprite
@@ -45,7 +58,7 @@ public class CompanionCarInterface : MonoBehaviour
         carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
     }
 
-    void CalculateControls()
+    private void CalculateControls()
     {
         // Receive feedback of the current treadmill velocity
         carController.treadmillVelCallback(track);      // temporary
@@ -62,21 +75,10 @@ public class CompanionCarInterface : MonoBehaviour
     }
 
     // TODO - fix this once using ROS#
-    void carCommandCallback(CarController.CarCommand command)
+    private void carCommandCallback(CarController.CarCommand command)
     {
         steer = steerSys.Output(command.steer);
         throttle = throttleSys.Output(command.throttle);
-    }
-
-    private void UpdateGoal()
-    {
-        //float x = Mathf.Clamp(Random.Range(transform.position.x - 3, transform.position.x + 3), 0, 20);
-        //float z = Mathf.Clamp(Random.Range(transform.position.z - 20, transform.position.x + 20), 0, 40);
-        float x = 5f;
-        float z = 20f;
-        Pose goal = new Pose(new Vector3(z, x, 0), transform.rotation);
-        Debug.Log(string.Format("companion car goal: ({0}, {1})", z, x));
-        carController.goalPoseCallback(goal);
     }
 
     void UpdateCar()

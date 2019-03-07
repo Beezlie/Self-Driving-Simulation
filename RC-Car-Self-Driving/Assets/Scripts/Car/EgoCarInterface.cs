@@ -25,12 +25,12 @@ public class EgoCarInterface : MonoBehaviour {
 
     public float GetTrackWidth()
     {
-        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.x;
+        return track.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
     }
 
     public float GetTrackLength()
     {
-        return track.gameObject.GetComponent<TrackSpeedUpdater>().GetComponent<MeshRenderer>().bounds.size.z;
+        return track.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
     }
 
     public Transform GetCurrentTransform()
@@ -113,6 +113,9 @@ public class EgoCarInterface : MonoBehaviour {
         line.SetVertexCount(numLineSegments + 1);
         line.useWorldSpace = false;
         DrawLidar();
+
+        Debug.Log(string.Format("track width {0}", GetTrackWidth()));
+        Debug.Log(string.Format("track length {0}", GetTrackLength()));
     }
 
     //Reset vehicle position on collision
