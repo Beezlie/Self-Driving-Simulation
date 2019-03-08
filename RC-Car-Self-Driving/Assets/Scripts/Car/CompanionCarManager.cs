@@ -8,14 +8,14 @@ public class CompanionCarManager : MonoBehaviour {
     private GameObject track;
     private Dictionary<GameObject, int> companionCars;      // key = car game object, value = lane
     private List<string> companionCarNames;
-    private Dictionary<Vector2, bool> trackOccupancy;
 
     //Track info
     private float trackLength;
     private float trackWidth;
     private float laneWidth;
     private int numLanes = 6;
-    private float[] laneMidPoints;
+    private float laneMidPointOffset;
+    private float[] laneLines;
 
     private void Start () {
         // Find size of main track
@@ -23,15 +23,16 @@ public class CompanionCarManager : MonoBehaviour {
         trackLength = track.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
         trackWidth = track.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
 
-        // Create array of lane midpoints
+        // Store the location of the lane lines
         laneWidth = trackWidth / numLanes;
         Debug.Log(string.Format("lane width: {0}.", laneWidth));
-        laneMidPoints = new float[numLanes];
+        laneLines = new float[numLanes];
         for (int i = 0; i < numLanes; i++)
         {
-            laneMidPoints[i] = laneWidth * (i + 1);
-            Debug.Log(string.Format("lane midpoint: {0}.", laneMidPoints[i]));
+            laneLines[i] = laneWidth * (i + 1);
+            Debug.Log(string.Format("lane line: {0}.", laneLines[i]));
         }
+        laneMidPointOffset = laneLines[0] / 2;
 
         // Find companion car game objects
         companionCars = new Dictionary<GameObject, int>();
@@ -67,6 +68,7 @@ public class CompanionCarManager : MonoBehaviour {
             int lane = entry.Value;
 
             // Select lane and longitudinal goal
+            int maxLaneChange = 1;
             float maxZ = trackLength / 2;
             float goalZ = Mathf.Clamp(Random.Range(car.transform.position.z - maxZ, car.transform.position.z + maxZ), trackLength * 0.1f, trackLength * 0.9f);
 
@@ -74,18 +76,18 @@ public class CompanionCarManager : MonoBehaviour {
             int newLane;
             if (goalZ >= car.transform.position.z)
             {
-                newLane = Mathf.Clamp(Random.Range(lane - 1, lane + 1), 0, numLanes);
+                newLane = Mathf.Clamp(Random.Range(lane - maxLaneChange, lane + maxLaneChange), 0, numLanes);
             } else
             {
                 newLane = lane;
             }
 
-            Vector3 goalPos = new Vector3(laneMidPoints[newLane], 0, goalZ);
+            Vector3 goalPos = new Vector3(laneLines[newLane] - laneMidPointOffset, 0, goalZ);
 
             if (!PathOccupied(car, goalPos))
             {
                 Debug.Log(string.Format("{0} goal: {1}", car.name, goalPos));
-                car.gameObject.GetComponent<CompanionCarInterface>().SetTargetPosition(new Vector3(laneMidPoints[newLane], 0, goalZ));
+                car.gameObject.GetComponent<CompanionCarInterface>().SetTargetPosition(goalPos);
             }
         }
     }
@@ -103,7 +105,6 @@ public class CompanionCarManager : MonoBehaviour {
                 carInPath = true;
             }
         }
-  
         return carInPath;
     }
 
@@ -112,9 +113,10 @@ public class CompanionCarManager : MonoBehaviour {
     {
         Dictionary<int, float> laneDistances = new Dictionary<int, float>();
 
-        for (int i = 0; i < laneMidPoints.Length; i++)
+        for (int i = 0; i < laneLines.Length; i++)
         {
-            laneDistances[i] = Mathf.Abs(x - laneMidPoints[i]);
+            float laneMidPoint = laneLines[i] - laneMidPointOffset;
+            laneDistances[i] = Mathf.Abs(x - laneMidPoint);
         }
 
         int minDiffLane = 0;
