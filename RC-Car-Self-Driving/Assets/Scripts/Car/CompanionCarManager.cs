@@ -4,10 +4,13 @@ using UnityEngine;
 
 public class CompanionCarManager : MonoBehaviour {
 
+    public enum DrivingMode { NORMAL, PURSUIT };
+
     public int numCompanionCars = 2;        //2 by default
     private GameObject track;
+    private GameObject egoCar;
     private Dictionary<GameObject, int> companionCars;      // key = car game object, value = lane
-    private List<string> companionCarNames;
+    private Dictionary<string, DrivingMode> companionCarModes;
 
     //Track info
     private float trackLength;
@@ -17,11 +20,19 @@ public class CompanionCarManager : MonoBehaviour {
     private float laneMidPointOffset;
     private float[] laneLines;
 
+    public void SetDrivingMode(string carName, DrivingMode mode)
+    {
+        companionCarModes[carName] = mode;
+    }
+
     private void Start () {
         // Find size of main track
         track = GameObject.Find("Road Piece");
         trackLength = track.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
         trackWidth = track.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
+
+        // Find EgoCar game object
+        egoCar = GameObject.Find("EgoCar");
 
         // Store the location of the lane lines
         laneWidth = trackWidth / numLanes;
@@ -36,15 +47,15 @@ public class CompanionCarManager : MonoBehaviour {
 
         // Find companion car game objects
         companionCars = new Dictionary<GameObject, int>();
-        companionCarNames = new List<string>();
+        companionCarModes = new Dictionary<string, DrivingMode>();
         for (int i = 0; i < numCompanionCars; i++)
         {
             string companionCarName = "CompanionCar" + i.ToString();
             GameObject car = GameObject.Find(companionCarName);
             if (car != null)
             {
-                companionCarNames.Add(car.name);
-                Debug.Log(string.Format("car name: {0}", car.name));
+                // Set driving mode to default
+                companionCarModes[car.name] = DrivingMode.NORMAL;
 
                 // Set initial goal as nearest lane midpoint for each car
                 int lane = NearestLane(car.transform.position.x);
@@ -66,21 +77,35 @@ public class CompanionCarManager : MonoBehaviour {
         {
             GameObject car = entry.Key;
             int lane = entry.Value;
+            DrivingMode drivingMode = companionCarModes[car.name];
 
             // Select lane and longitudinal goal
             int maxLaneChange = 1;
             float maxZ = trackLength / 2;
-            float goalZ = Mathf.Clamp(Random.Range(car.transform.position.z - maxZ, car.transform.position.z + maxZ), trackLength * 0.1f, trackLength * 0.9f);
+
+            float goalZ;
+            int newLane;
+            switch(drivingMode)
+            {
+                default:
+                {
+                    goalZ = Mathf.Clamp(Random.Range(car.transform.position.z - maxZ, car.transform.position.z + maxZ), trackLength * 0.1f, trackLength * 0.9f);
+                    newLane = Mathf.Clamp(Random.Range(lane - maxLaneChange, lane + maxLaneChange), 0, numLanes);
+                    break;
+                }
+                case DrivingMode.PURSUIT:
+                {
+                    goalZ = egoCar.transform.position.z;
+                    newLane = Mathf.Clamp(NearestLane(egoCar.transform.position.x), lane - maxLaneChange, lane + maxLaneChange);
+                    break;
+                }
+            }
 
             // Only change lanes if not moving backwards
-            int newLane;
-            if (goalZ >= car.transform.position.z)
-            {
-                newLane = Mathf.Clamp(Random.Range(lane - maxLaneChange, lane + maxLaneChange), 0, numLanes);
-            } else
+            if (goalZ < car.transform.position.z)
             {
                 newLane = lane;
-            }
+            } 
 
             Vector3 goalPos = new Vector3(laneLines[newLane] - laneMidPointOffset, 0, goalZ);
 
@@ -100,7 +125,8 @@ public class CompanionCarManager : MonoBehaviour {
         for (int j = 0; j < hits.Length; j++)
         {
             Debug.Log(string.Format("hit names: {0}.", hits[j].transform.gameObject.tag));
-            if (companionCarNames.Contains(hits[j].transform.gameObject.tag))
+            //TODO - check if this actually works
+            if (companionCarModes.ContainsKey(hits[j].transform.gameObject.tag))
             {
                 carInPath = true;
             }
