@@ -11394,6 +11394,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1504674960}
+  - component: {fileID: 1504674961}
   m_Layer: 0
   m_Name: Town (3)
   m_TagString: Untagged
@@ -11419,6 +11420,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1504674961
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1504674959}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aada6c64b5ab434d97d6a00437259b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1522796048
 Prefab:
   m_ObjectHideFlags: 0
@@ -11596,8 +11608,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1607541969}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.5820312, y: -9.339844, z: -10.356255}
-  m_LocalScale: {x: 20, y: 40.000015, z: 1}
+  m_LocalPosition: {x: 2.5820312, y: -9.339844, z: -10.45}
+  m_LocalScale: {x: 20, y: 40.52802, z: 1}
   m_Children: []
   m_Father: {fileID: 1143440664}
   m_RootOrder: 4
@@ -12958,8 +12970,8 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1860226402}
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 2.5820312, y: -9.339844, z: -10.65625}
-  m_LocalScale: {x: 20, y: 40.000015, z: 1}
+  m_LocalPosition: {x: 2.5820312, y: -9.339844, z: -11.04}
+  m_LocalScale: {x: 20, y: 40.47202, z: 1}
   m_Children: []
   m_Father: {fileID: 1054282477}
   m_RootOrder: 4
@@ -13620,6 +13632,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2061518559}
+  - component: {fileID: 2061518560}
   m_Layer: 0
   m_Name: Town (4)
   m_TagString: Untagged
@@ -13645,6 +13658,17 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2061518560
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2061518558}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1aada6c64b5ab434d97d6a00437259b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &2065060685
 Prefab:
   m_ObjectHideFlags: 0
