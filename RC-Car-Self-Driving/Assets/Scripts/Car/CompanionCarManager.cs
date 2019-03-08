@@ -6,6 +6,7 @@ public class CompanionCarManager : MonoBehaviour {
 
     public int numCompanionCars = 2;        //2 by default
     private List<GameObject> companionCars;
+    private GameObject egoCar;
 
     private void Start () {
         InvokeRepeating("UpdateGoal", 0f, 10f);
@@ -25,14 +26,21 @@ public class CompanionCarManager : MonoBehaviour {
                 Debug.Log(string.Format("Could not find {0}.", companionCarName));
             }
         }
+
+        egoCar = GameObject.Find("EgoCar");
     }
 
     private void UpdateGoal()
     {
         foreach (GameObject car in companionCars)
         {
-            float goalZ = Mathf.Clamp(Random.Range(car.transform.position.z - 20, car.transform.position.z + 20), 5, 35);
-            car.gameObject.GetComponent<CompanionCarInterface>().SetTargetPosition(new Vector3(car.transform.position.x, 0, goalZ));
+            // float goalZ = Mathf.Clamp(Random.Range(car.transform.position.z - 20, car.transform.position.z + 20), 5, 35);
+            // car.gameObject.GetComponent<CompanionCarInterface>().SetTargetPosition(new Vector3(car.transform.position.x, 0, goalZ));
+            car.gameObject.GetComponent<CompanionCarInterface>().SetTargetPosition(egoCar.transform.position);
         }
+    }
+
+    public List<GameObject> GetCompanionCars() {
+        return companionCars;
     }
 }

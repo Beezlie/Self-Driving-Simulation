@@ -26,12 +26,17 @@ public class EgoCarInterface : Agent {
     private float detectionRadius = 7.5f;
     LineRenderer line;
 
-    public float GetTrackWidth()
+    private float oldActionX = 0;
+    private float oldActionZ = 0;
+    private int agentResetCount = 0;
+    private List<GameObject> companionCars = new List<GameObject>();
+
+    public float GetTrackLength()
     {
         return road.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
     }
 
-    public float GetTrackLength()
+    public float GetTrackWidth()
     {
         return road.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
     }
@@ -83,6 +88,17 @@ public class EgoCarInterface : Agent {
         return obstaclePos;
     }
 
+    //Return N closest cars
+    public List<GameObject> DetectNClosestObstacles(int N)
+    {
+        companionCars = companionCars
+            .OrderBy(car => (transform.position - car.transform.position).magnitude)
+            .Take(N)
+            .ToList();
+
+        return companionCars;
+    }
+
     private void Awake()
     {
         // Find track object so velocity can be fed to car controller
@@ -124,17 +140,16 @@ public class EgoCarInterface : Agent {
 
         Debug.Log(string.Format("track width {0}", GetTrackWidth()));
         Debug.Log(string.Format("track length {0}", GetTrackLength()));
+
+        companionCars = gameObject.GetComponent<CompanionCarManager>().GetCompanionCars();
     }
 
     //Reset vehicle position on collision
     private void OnCollisionEnter(Collision collision)
     {
-        Vector3 resetPosition = new Vector3(0, 1, 0);
-        carState.x = resetPosition.x;
-        carState.z = resetPosition.z;
-        goalPos = resetPosition;
-        SetTargetPosition(goalPos);
-        Debug.Log(string.Format("Collision detected.  Resetting EgoCar position to {0}", resetPosition));
+        Debug.Log("Collision detected");
+        SetReward(-1.0f);
+        Done();
     }
 
     void UpdateCar()
@@ -187,33 +202,13 @@ public class EgoCarInterface : Agent {
     // Update is called once per frame
     void Update()
     {
-        SetTargetPosition(target);
-        // AddReward(-0.1f);
-        // resetCount = resetCount + 1;
-        // if ((transform.position - GetTargetPosition()).sqrMagnitude < 5) {
-        //     resetCount = 0;
-        // }
-        // Debug.Log(resetCount);
-            // RequestDecision();
-        // } else if (resetCount > 20) { // CHANGE THIS!!!
-        //     Debug.Log("Running In Circles");
-        //     resetCount = 0;
-        //     RequestDecision();
-        // }
-        if (transform.position.x >= mapLength - 10) {
-            Debug.Log("Finished");
-            // resetCount = 0;
-            SetReward(1.0f);
-            finished = true;
-            Done();
-        } else if (
-            GetTargetPosition().x < 10 || 
-            GetTargetPosition().z < 10 ||
-            GetTargetPosition().z > 40) {
+        AddReward(0.01f);
+        if (GetTargetPosition().x < 0 || 
+            GetTargetPosition().x > GetTrackLength() || 
+            GetTargetPosition().z < 0 ||
+            GetTargetPosition().z > GetTrackWidth()) {
             Debug.Log("Out Of Bounds");
-            // resetCount = 0;
             SetReward(-1.0f);
-            finished = false;
             Done();
         }
     }
@@ -222,66 +217,26 @@ public class EgoCarInterface : Agent {
     {
         agentResetCount = agentResetCount + 1;
         Debug.Log(string.Format("Agent Reset: {0}", agentResetCount));
-        Pathfinding.GetComponent<ObstaclesController>().InitObstacles();
-        transform.position = new Vector3(startingXPos, 0, 25);
-        transform.eulerAngles = new Vector3(0, 90, 0);
 
         //Reset target position
-        targetPosition = transform.position;
-        Debug.Log(transform.position);
-        if (finished) {
-            wins = wins + 1;
-        } else if (transform.position.x > 30) {
-            loses = loses + 1;
-        }
-        Debug.Log(wins);
-        Debug.Log(loses);
-    }
-
-    private void OnCollisionEnter(Collision collision)
-    {
-        Debug.Log("Collision detected");
-        SetReward(-1.0f);
-        finished = false;
-        Done();
-    }
-
-    //Search through all obstacles to find which fall within a radius of the car
-    public List<ObstacleData> DetectNClosestObstacles(int N)
-    {
-        //The list with close obstacles
-        List<ObstacleData> closeObstacles = new List<ObstacleData>();
-
-        //The list with all obstacles in the map
-        List<ObstacleData> allObstacles = ObstaclesController.obstaclesPosList;
-
-        //Find close obstacles
-        for (int i = 0; i < allObstacles.Count; i++)
-        {
-            closeObstacles.Add(allObstacles[i]);
-        }
-        List<ObstacleData> firstNClosestObstacles = closeObstacles
-            .OrderBy(obs => (transform.position - obs.centerPos).magnitude)
-            .Take(N)
-            .ToList();
-
-        return firstNClosestObstacles;
+        Vector3 resetPosition = new Vector3(0, 1, 0);
+        carState.x = resetPosition.x;
+        carState.z = resetPosition.z;
+        goalPos = resetPosition;
+        SetTargetPosition(goalPos);
+        Debug.Log(string.Format("Resetting EgoCar position to {0}", resetPosition));
     }
 
     public override void CollectObservations() {
         Debug.Log("Collecting Observations");
-        AddVectorObs(transform.position.x/mapLength);
-        AddVectorObs(transform.position.z/mapWidth);
+        AddVectorObs(transform.position.x/GetTrackLength());
+        AddVectorObs(transform.position.z/GetTrackWidth());
 
-        int numOfObstaclesDetected = 5;
-        List<ObstacleData> obstacleList = DetectNClosestObstacles(numOfObstaclesDetected);
+        int numOfObstaclesDetected = 2;
+        List<GameObject> obstacleList = DetectNClosestObstacles(numOfObstaclesDetected);
         for (int i = 0; i < obstacleList.Count; i++) {
-            AddVectorObs((obstacleList[i].centerPos.x - transform.position.x)/mapLength);
-            AddVectorObs((obstacleList[i].centerPos.z - transform.position.z)/mapWidth);
-            AddVectorObs((obstacleList[i].cornerPos.BL.x - transform.position.x)/mapLength);
-            AddVectorObs((obstacleList[i].cornerPos.FR.x - transform.position.x)/mapLength);
-            AddVectorObs((obstacleList[i].cornerPos.BL.z - transform.position.z)/mapWidth);
-            AddVectorObs((obstacleList[i].cornerPos.FR.z - transform.position.z)/mapWidth);
+            AddVectorObs((obstacleList[i].transform.position.x - transform.position.x)/GetTrackLength());
+            AddVectorObs((obstacleList[i].transform.position.z - transform.position.z)/GetTrackWidth());
         }
         if (numOfObstaclesDetected > obstacleList.Count) {
             for (int i = 0; i < numOfObstaclesDetected - obstacleList.Count; i++) {
@@ -295,17 +250,15 @@ public class EgoCarInterface : Agent {
         if (vectorAction[0] != oldActionX || vectorAction[1] != oldActionZ) {
             Debug.Log("Acting");
             float norm = Mathf.Sqrt(Mathf.Pow(vectorAction[0], 2) + Mathf.Pow(vectorAction[1], 2));
-            target = new Vector3(
-                Mathf.Clamp(transform.position.x + vectorAction[0]*20/norm, 0, mapLength), 
+            SetTargetPosition(new Vector3(
+                transform.position.x + vectorAction[0]*20/norm, 
                 0, 
-                transform.position.z + vectorAction[1]*20/norm);
-            // SetTargetPosition(waypoint);
+                transform.position.z + vectorAction[1]*20/norm));
             oldActionX = vectorAction[0];
             oldActionZ = vectorAction[1];
         }
-        SetReward(transform.position.x - currentXPos);
         // Debug.Log(string.Format("Reward: {0}", transform.position.x - currentXPos));
-        currentXPos = transform.position.x;
+        // currentXPos = transform.position.x;
         // Debug.Log(transform.position);
         // Debug.Log(GetTargetPosition());
     }
