@@ -98,8 +98,10 @@ public class EgoCarEvaluationInterface : MonoBehaviour {
         // Set initial gosl
         SetTargetPosition(transform.position);
 
+        /*
         // Get goal publisher attached to ego car
         goalPublisher = gameObject.GetComponent(typeof(PoseStampedPublisher)) as PoseStampedPublisher;
+        */
 
         //Draw the lidar visualization
         line = gameObject.GetComponent<LineRenderer>();
@@ -110,9 +112,11 @@ public class EgoCarEvaluationInterface : MonoBehaviour {
 
     private void Update()
     {
+        /*
         //Publish the EgoCar's goal pose
         goalPublisher.PublishedTransform.position = goalPos;
         goalPublisher.PublishedTransform.rotation = transform.rotation;
+        */
     }
 
     // Draw circle around car representing detection range of Lidar sensor

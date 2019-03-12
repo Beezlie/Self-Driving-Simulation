@@ -18,8 +18,6 @@ namespace RosSharp.RosBridgeClient
         {
             linearVel = GetLinear(message).Ros2Unity();
             angularVel = GetAngular(message).Ros2Unity();
-            Debug.Log(string.Format("Linear Vel: {0}", linearVel));
-            Debug.Log(string.Format("Angular Vel: {0}", angularVel));
         }
 
         private Vector3 GetLinear(Messages.Geometry.TwistStamped message)

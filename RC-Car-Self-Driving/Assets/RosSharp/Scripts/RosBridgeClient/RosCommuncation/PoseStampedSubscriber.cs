@@ -25,6 +25,11 @@ namespace RosSharp.RosBridgeClient
         public Quaternion rotation;
         private bool isMessageReceived;
 
+        public void Awake()
+        {
+            base.Start();
+        }
+
         protected override void Start()
         {
 			base.Start();
@@ -46,6 +51,7 @@ namespace RosSharp.RosBridgeClient
         private void ProcessMessage()
         {
             PublishedTransform.position = position;
+            Debug.Log(string.Format("sub pos: {0}", position.ToString("F4")));
             PublishedTransform.rotation = rotation;
         }
 

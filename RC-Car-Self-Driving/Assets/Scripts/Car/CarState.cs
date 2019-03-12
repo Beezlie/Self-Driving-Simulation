@@ -13,7 +13,7 @@ public class CarState
     public float dpsi;
     public float dv;
 
-    private float acceleration = 1f;
+    private float trackScaleFactor = 10f;
     private float betaMultiplier = 25f;
 
     private float lr;
@@ -39,7 +39,7 @@ public class CarState
         float beta = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));   //steer is in radians
 
         // calculate incremental changes
-        dz = v * Mathf.Cos(psi + beta) - trackVel;
+        dz = v * Mathf.Cos(psi + beta) - trackVel * trackScaleFactor;
         dx = v * Mathf.Sin(psi + beta * betaMultiplier);
         dpsi = (v / lr) * Mathf.Sin(beta);
 
@@ -47,19 +47,6 @@ public class CarState
         z = z + dz * dt;
         x = x + dx * dt;
         psi = psi + dpsi * dt;
-        v = throttle * acceleration;       //might need to multiply by some constant here
-
-        /*
-        Debug.Log(string.Format("lr = lf: {0}", lr));
-        Debug.Log(string.Format("beta: {0}", beta));
-        Debug.Log(string.Format("dz: {0}", dz));
-        Debug.Log(string.Format("dx: {0}", dx));
-        Debug.Log(string.Format("dpsi: {0}", dpsi));
-        Debug.Log(string.Format("dv: {0}", dv));
-        Debug.Log(string.Format("z: {0}", z));
-        Debug.Log(string.Format("x: {0}", x));
-        Debug.Log(string.Format("psi: {0}", psi));
-        Debug.Log(string.Format("v: {0}", v));
-        */
+        v = throttle * trackScaleFactor;       //might need to multiply by some constant here
     }
 }

@@ -29,6 +29,7 @@ namespace RosSharp.RosBridgeClient
         public enum Protocols { WebSocketSharp, WebSocketNET };
         public Protocols Protocol;
         public string RosBridgeServerUrl = "ws://192.168.0.1:9090";
+        public bool connectionEstablished = false;
 
         private ManualResetEvent isConnected = new ManualResetEvent(false);
 
@@ -76,12 +77,14 @@ namespace RosSharp.RosBridgeClient
         {
             isConnected.Set();
             Debug.Log("Connected to RosBridge: " + RosBridgeServerUrl);
+            connectionEstablished = true;
         }
 
         private void OnClosed(object sender, EventArgs e)
         {
             isConnected.Reset();
             Debug.Log("Disconnected from RosBridge: " + RosBridgeServerUrl);
+            connectionEstablished = false;
         }
     }
 }

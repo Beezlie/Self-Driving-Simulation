@@ -6,7 +6,7 @@ using UnityEngine.SceneManagement;
 
 public class TrackSpeedSubscriber : MonoBehaviour {
 
-    private float vel = 1f;
+    private float vel = 0.9f;
     private bool isTrainingMode = false;
     private float throttle;
     private Vector3 linearVel;
