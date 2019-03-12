@@ -12,6 +12,7 @@ public class EgoCarInterface : MonoBehaviour {
     private float throttle;     // in percentage
     private GameObject trackData;
     private GameObject road;
+    private GameObject companionCarManager;
 
     // Car info
     private Vector3 goalPos;
@@ -81,6 +82,11 @@ public class EgoCarInterface : MonoBehaviour {
         return obstaclePos;
     }
 
+    public void SetCompanionCarMode(string companionCarName, CompanionCarManager.DrivingMode mode)
+    {
+        companionCarManager.gameObject.GetComponent<CompanionCarManager>().SetDrivingMode(companionCarName, mode);
+    }
+
     private void Awake()
     {
         // Find track object so velocity can be fed to car controller
@@ -93,6 +99,11 @@ public class EgoCarInterface : MonoBehaviour {
         if (road == null)
         {
             Debug.Log("The Road Piece object was not found.");
+        }
+        companionCarManager = GameObject.Find("CompanionCars");
+        if (companionCarManager == null)
+        {
+            Debug.Log("The CompanionCars object was not found.");
         }
     }
 
