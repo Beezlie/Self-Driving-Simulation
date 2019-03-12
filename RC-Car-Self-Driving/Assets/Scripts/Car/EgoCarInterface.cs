@@ -14,6 +14,7 @@ public class EgoCarInterface : Agent {
     private float throttle;     // in percentage
     private GameObject trackData;
     private GameObject road;
+    private GameObject companionCarManager;
 
     // Car info
     private Vector3 goalPos;
@@ -99,6 +100,11 @@ public class EgoCarInterface : Agent {
         return companionCars;
     }
 
+    public void SetCompanionCarMode(string companionCarName, CompanionCarManager.DrivingMode mode)
+    {
+        companionCarManager.gameObject.GetComponent<CompanionCarManager>().SetDrivingMode(companionCarName, mode);
+    }
+
     private void Awake()
     {
         // Find track object so velocity can be fed to car controller
@@ -111,6 +117,14 @@ public class EgoCarInterface : Agent {
         if (road == null)
         {
             Debug.Log("The Road Piece object was not found.");
+        }
+        companionCarManager = GameObject.Find("CompanionCars");
+        if (companionCarManager == null)
+        {
+            Debug.Log("The CompanionCars object was not found.");
+        } else {
+            companionCars = companionCarManager.gameObject.GetComponent<CompanionCarManager>().GetCompanionCars();
+            Debug.Log(string.Format("Companion Cars: {0}", companionCars.Count));
         }
     }
 
@@ -141,7 +155,8 @@ public class EgoCarInterface : Agent {
         Debug.Log(string.Format("track width {0}", GetTrackWidth()));
         Debug.Log(string.Format("track length {0}", GetTrackLength()));
 
-        companionCars = gameObject.GetComponent<CompanionCarManager>().GetCompanionCars();
+        companionCarManager.GetComponent<CompanionCarManager>().SetDrivingMode("CompanionCar0", CompanionCarManager.DrivingMode.PURSUIT);
+        companionCarManager.GetComponent<CompanionCarManager>().SetDrivingMode("CompanionCar1", CompanionCarManager.DrivingMode.PURSUIT);
     }
 
     //Reset vehicle position on collision

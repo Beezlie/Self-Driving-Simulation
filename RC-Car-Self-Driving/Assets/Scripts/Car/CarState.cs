@@ -13,7 +13,7 @@ public class CarState
     public float dpsi;
     public float dv;
 
-    private float acceleration = 1f;
+    private float acceleration = 10f;
     private float betaMultiplier = 25f;
 
     private float lr;
