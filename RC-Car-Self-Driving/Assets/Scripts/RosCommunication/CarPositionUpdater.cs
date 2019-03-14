@@ -19,7 +19,8 @@ public class CarPositionUpdater : MonoBehaviour {
     private List<int> numSamePos;
     private List<Vector3> prevPos;
 
-    private Vector3 initGoal = new Vector3(0, 0, 0);
+    // TODO: Change init car spawn goal 
+    private Vector3 initPosition = new Vector3(0, 0, 0);
 
     void Start () {
 
@@ -42,7 +43,7 @@ public class CarPositionUpdater : MonoBehaviour {
             if (egoCarNum == i)
             {
                 egoCarGoal = new GameObject();
-                egoCarGoal.transform.position = initGoal;
+                egoCarGoal.transform.position = initPosition;
 
                 PoseStampedPublisher poseStampedPublisher = egoCarGoal.AddComponent(typeof(PoseStampedPublisher)) as PoseStampedPublisher;
                 poseStampedPublisher.Topic = "/car/" + i + "/nav/goal";
@@ -75,6 +76,7 @@ public class CarPositionUpdater : MonoBehaviour {
             poseStampedSubscriber.TimeStep = 0.1f;
             poseStampedSubscriber.Topic = "/car/" + i + "/pose";
             poseStampedSubscriber.PublishedTransform = rosInterface.transform;
+            poseStampedSubscriber.Awake();
 
             rosInterface.SetActive(true);
             rosInterfaces.Add(rosInterface);
