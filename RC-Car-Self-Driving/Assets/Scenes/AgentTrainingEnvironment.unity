@@ -159,6 +159,7 @@ MonoBehaviour:
   Timeout: 10
   Protocol: 0
   RosBridgeServerUrl: ws://129.97.69.100:9090
+  connectionEstablished: 0
 --- !u!114 &28621114
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -188,6 +189,7 @@ MonoBehaviour:
   Timeout: 10
   Protocol: 0
   RosBridgeServerUrl: ws://192.168.0.1:9090
+  connectionEstablished: 0
 --- !u!114 &28621116
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1048,7 +1050,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 145589747}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -7.2120132, y: -9.412504, z: 13.800774}
+  m_LocalPosition: {x: -7.2120132, y: -9.412511, z: 13.800774}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1135290399}
@@ -11632,6 +11634,7 @@ MonoBehaviour:
   Timeout: 10
   Protocol: 0
   RosBridgeServerUrl: ws://129.97.69.100:9090
+  connectionEstablished: 0
 --- !u!114 &1607541976
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13005,6 +13008,7 @@ MonoBehaviour:
   Timeout: 10
   Protocol: 0
   RosBridgeServerUrl: ws://129.97.69.100:9090
+  connectionEstablished: 0
 --- !u!1 &1917687914
 GameObject:
   m_ObjectHideFlags: 0
