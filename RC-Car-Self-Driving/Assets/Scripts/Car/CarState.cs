@@ -39,7 +39,7 @@ public class CarState
         float beta = Mathf.Atan((lr / (lf + lr)) * Mathf.Tan(steer));   //steer is in radians
 
         // calculate incremental changes
-        dz = v * Mathf.Cos(psi + beta) - trackVel;
+        dz = v * Mathf.Cos(psi + beta) - trackVel * acceleration;
         dx = v * Mathf.Sin(psi + beta * betaMultiplier);
         dpsi = (v / lr) * Mathf.Sin(beta);
 

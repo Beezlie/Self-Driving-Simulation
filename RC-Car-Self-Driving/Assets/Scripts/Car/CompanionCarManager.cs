@@ -48,15 +48,14 @@ public class CompanionCarManager : MonoBehaviour {
         // Find companion car game objects
         companionCars = new Dictionary<GameObject, int>();
         companionCarModes = new Dictionary<string, DrivingMode>();
+        companionCarModes["CompanionCar0"] = DrivingMode.NORMAL;
+        companionCarModes["CompanionCar1"] = DrivingMode.PURSUIT;
         for (int i = 0; i < numCompanionCars; i++)
         {
             string companionCarName = "CompanionCar" + i.ToString();
             GameObject car = GameObject.Find(companionCarName);
             if (car != null)
             {
-                // Set driving mode to default
-                companionCarModes[car.name] = DrivingMode.NORMAL;
-
                 // Set initial goal as nearest lane midpoint for each car
                 int lane = NearestLane(car.transform.position.x);
                 companionCars[car] = lane;
@@ -85,6 +84,7 @@ public class CompanionCarManager : MonoBehaviour {
 
             float goalZ;
             int newLane;
+            Debug.Log(string.Format("Mode, {0}", drivingMode));
             switch(drivingMode)
             {
                 default:

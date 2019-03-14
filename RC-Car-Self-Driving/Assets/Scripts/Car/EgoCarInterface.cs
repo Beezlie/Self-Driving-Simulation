@@ -32,12 +32,12 @@ public class EgoCarInterface : Agent {
     private int agentResetCount = 0;
     private List<GameObject> companionCars = new List<GameObject>();
 
-    public float GetTrackLength()
+    public float GetTrackWidth()
     {
         return road.gameObject.GetComponent<MeshRenderer>().bounds.size.x;
     }
 
-    public float GetTrackWidth()
+    public float GetTrackLength()
     {
         return road.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
     }
@@ -122,9 +122,6 @@ public class EgoCarInterface : Agent {
         if (companionCarManager == null)
         {
             Debug.Log("The CompanionCars object was not found.");
-        } else {
-            companionCars = companionCarManager.gameObject.GetComponent<CompanionCarManager>().GetCompanionCars();
-            Debug.Log(string.Format("Companion Cars: {0}", companionCars.Count));
         }
     }
 
@@ -154,9 +151,7 @@ public class EgoCarInterface : Agent {
 
         Debug.Log(string.Format("track width {0}", GetTrackWidth()));
         Debug.Log(string.Format("track length {0}", GetTrackLength()));
-
-        companionCarManager.GetComponent<CompanionCarManager>().SetDrivingMode("CompanionCar0", CompanionCarManager.DrivingMode.PURSUIT);
-        companionCarManager.GetComponent<CompanionCarManager>().SetDrivingMode("CompanionCar1", CompanionCarManager.DrivingMode.PURSUIT);
+        companionCars = companionCarManager.gameObject.GetComponent<CompanionCarManager>().GetCompanionCars();
     }
 
     //Reset vehicle position on collision
@@ -218,10 +213,10 @@ public class EgoCarInterface : Agent {
     void Update()
     {
         AddReward(0.01f);
-        if (GetTargetPosition().x < 0 || 
-            GetTargetPosition().x > GetTrackLength() || 
-            GetTargetPosition().z < 0 ||
-            GetTargetPosition().z > GetTrackWidth()) {
+        if (GetCurrentPosition().x < 0 || 
+            GetCurrentPosition().x > GetTrackWidth() || 
+            GetCurrentPosition().z < 0 ||
+            GetCurrentPosition().z > GetTrackLength()) {
             Debug.Log("Out Of Bounds");
             SetReward(-1.0f);
             Done();
@@ -234,7 +229,7 @@ public class EgoCarInterface : Agent {
         Debug.Log(string.Format("Agent Reset: {0}", agentResetCount));
 
         //Reset target position
-        Vector3 resetPosition = new Vector3(0, 1, 0);
+        Vector3 resetPosition = new Vector3(Random.Range(0, GetTrackWidth()), 0, Random.Range(0, GetTrackLength()));
         carState.x = resetPosition.x;
         carState.z = resetPosition.z;
         goalPos = resetPosition;
@@ -244,14 +239,14 @@ public class EgoCarInterface : Agent {
 
     public override void CollectObservations() {
         Debug.Log("Collecting Observations");
-        AddVectorObs(transform.position.x/GetTrackLength());
-        AddVectorObs(transform.position.z/GetTrackWidth());
+        AddVectorObs(transform.position.x/GetTrackWidth());
+        AddVectorObs(transform.position.z/GetTrackLength());
 
         int numOfObstaclesDetected = 2;
         List<GameObject> obstacleList = DetectNClosestObstacles(numOfObstaclesDetected);
         for (int i = 0; i < obstacleList.Count; i++) {
-            AddVectorObs((obstacleList[i].transform.position.x - transform.position.x)/GetTrackLength());
-            AddVectorObs((obstacleList[i].transform.position.z - transform.position.z)/GetTrackWidth());
+            AddVectorObs((obstacleList[i].transform.position.x - transform.position.x)/GetTrackWidth());
+            AddVectorObs((obstacleList[i].transform.position.z - transform.position.z)/GetTrackLength());
         }
         if (numOfObstaclesDetected > obstacleList.Count) {
             for (int i = 0; i < numOfObstaclesDetected - obstacleList.Count; i++) {
@@ -266,15 +261,12 @@ public class EgoCarInterface : Agent {
             Debug.Log("Acting");
             float norm = Mathf.Sqrt(Mathf.Pow(vectorAction[0], 2) + Mathf.Pow(vectorAction[1], 2));
             SetTargetPosition(new Vector3(
-                transform.position.x + vectorAction[0]*20/norm, 
+                Mathf.Clamp(transform.position.x + GetTrackWidth()*(vectorAction[0] + 1)/4, 0, GetTrackWidth()), 
                 0, 
-                transform.position.z + vectorAction[1]*20/norm));
+                Mathf.Clamp(transform.position.z + GetTrackLength()*(vectorAction[1] + 1)/4, 0, GetTrackLength())));
             oldActionX = vectorAction[0];
             oldActionZ = vectorAction[1];
+            Debug.Log(string.Format("Target Position: {0}", GetTargetPosition()));
         }
-        // Debug.Log(string.Format("Reward: {0}", transform.position.x - currentXPos));
-        // currentXPos = transform.position.x;
-        // Debug.Log(transform.position);
-        // Debug.Log(GetTargetPosition());
     }
 }
