@@ -3544,8 +3544,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d51e36176f75d4458f94222bf044e9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  numCars: 4
-  egoCarNum: 0
+  numCars: 1
+  egoCarNum: 1
 --- !u!1001 &1237473326
 Prefab:
   m_ObjectHideFlags: 0

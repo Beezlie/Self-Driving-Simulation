@@ -35,11 +35,6 @@ public class EgoCarTrainingInterface : MonoBehaviour {
         return road.gameObject.GetComponent<MeshRenderer>().bounds.size.z;
     }
 
-    public float GetTrackVelocity()
-    {
-        return trackData.gameObject.GetComponent<TrackSpeedSubscriber>().GetVelocity();
-    }
-
     public Transform GetCurrentTransform()
     {
         return transform;
@@ -87,13 +82,9 @@ public class EgoCarTrainingInterface : MonoBehaviour {
         return obstaclePos;
     }
 
-    // Set the companion car driving mode during training
     public void SetCompanionCarMode(string companionCarName, CompanionCarManager.DrivingMode mode)
     {
-        if (companionCarManager != null)
-        {
-            companionCarManager.gameObject.GetComponent<CompanionCarManager>().SetDrivingMode(companionCarName, mode);
-        }
+        companionCarManager.gameObject.GetComponent<CompanionCarManager>().SetDrivingMode(companionCarName, mode);
     }
 
     private void Awake()
@@ -159,7 +150,7 @@ public class EgoCarTrainingInterface : MonoBehaviour {
     {
         //Get updated track velocity
         float dt = (1 / Constants.targetHz);
-        float trackVel = GetTrackVelocity();
+        float trackVel = trackData.gameObject.GetComponent<TrackSpeedSubscriber>().GetVelocity();
 
         //Calculate car controls
         Pose convertedCoordinatesPose = new Pose(new Vector3(transform.position.z, transform.position.x, 0), transform.rotation);

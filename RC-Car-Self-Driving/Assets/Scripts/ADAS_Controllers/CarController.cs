@@ -155,7 +155,6 @@ public class CarController
         goalReceived = true;
     }
 
-    //TODO - figure out when this is called in the lab code
     private void ResetController()
     {
         Debug.Log("Resetting controller.");

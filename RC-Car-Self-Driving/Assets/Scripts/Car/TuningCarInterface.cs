@@ -43,6 +43,7 @@ public class TuningCarInterface : MonoBehaviour
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
+        transform.position = new Vector3(Constants.goalCoordinates.x, 1, Constants.goalCoordinates.z);
         carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
     }
 

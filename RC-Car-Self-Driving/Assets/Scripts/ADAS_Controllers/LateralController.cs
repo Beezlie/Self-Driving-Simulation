@@ -46,7 +46,6 @@ public class LateralController
         return lineSlope * intersectT + linePoint;
     }
 
-    //TODO - check that this function actually works
     protected float getYaw(Vector3 eulerAngles)
     {
         float yaw = eulerAngles.y * Mathf.Deg2Rad;
