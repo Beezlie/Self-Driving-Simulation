@@ -21,8 +21,8 @@ public class CompanionCarManager : MonoBehaviour {
     private float[] laneLines;
 
     // Driving mode goal updates
-    private float normalModeGoalUpdateRate = 10f;
-    private float pursuitModeGoalUpdateRate = 3f;
+    private float normalModeGoalUpdateRate = 3f;
+    private float pursuitModeGoalUpdateRate = 6f;
 
     public void SetDrivingMode(string carName, DrivingMode mode)
     {
@@ -52,8 +52,8 @@ public class CompanionCarManager : MonoBehaviour {
         // Find companion car game objects
         companionCars = new Dictionary<GameObject, int>();
         companionCarModes = new Dictionary<string, DrivingMode>();
-        companionCarModes["CompanionCar0"] = DrivingMode.NORMAL;
-        companionCarModes["CompanionCar1"] = DrivingMode.PURSUIT;
+        companionCarModes["CompanionCar0"] = DrivingMode.PURSUIT;
+        companionCarModes["CompanionCar1"] = DrivingMode.NORMAL;
         for (int i = 0; i < numCompanionCars; i++)
         {
             string companionCarName = "CompanionCar" + i.ToString();
@@ -166,12 +166,26 @@ public class CompanionCarManager : MonoBehaviour {
         return minDiffLane;
     }
 
-    public List<GameObject> GetCompanionCars() {
+    public List<GameObject> GetCompanionCars()
+    {
         List<GameObject> companionCarsList = new List<GameObject>();
         foreach (KeyValuePair<GameObject, int> companionCar in companionCars)
         {
             companionCarsList.Add(companionCar.Key);
         }
         return companionCarsList;
+    }
+
+    public List<GameObject> GetPursuingCars()
+    {
+        List<GameObject> pursuingCars = new List<GameObject>();
+        foreach (KeyValuePair<string, DrivingMode> car in companionCarModes)
+        {
+            if (car.Value == DrivingMode.PURSUIT)
+            {
+                pursuingCars.Add(GameObject.Find(car.Key));
+            }
+        }
+        return pursuingCars;
     }
 }

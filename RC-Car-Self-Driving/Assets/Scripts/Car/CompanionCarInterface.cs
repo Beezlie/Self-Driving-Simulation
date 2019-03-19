@@ -12,6 +12,7 @@ public class CompanionCarInterface : MonoBehaviour
     private float steer;        // in radians       
     private float throttle;     // in percentage
     private GameObject track;
+    private GameObject road;
 
     // Car info
     private Vector3 goalPos;
@@ -23,7 +24,7 @@ public class CompanionCarInterface : MonoBehaviour
     {
         carController.setNewGoalPosition(new Pose(new Vector3(position.z, position.x, 0), transform.rotation));
         goalPos = position;
-        Debug.Log(string.Format("Companion car target position set: {0}.", goalPos));
+        // Debug.Log(string.Format("Companion car target position set: {0}.", goalPos));
     }
 
     public Vector3 GetTargetPosition()
@@ -39,12 +40,15 @@ public class CompanionCarInterface : MonoBehaviour
         {
             Debug.Log("The track object was not found.");
         }
+        road = GameObject.Find("Road Piece");
+        if (road == null)
+        {
+            Debug.Log("The Road Piece object was not found.");
+        }
     }
 
-    private void Start()
+    private void Initialize()
     {
-        InvokeRepeating("UpdateCar", 0f, 1 / Constants.targetHz);
-
         //Get dimensions of car sprite
         float length = GetComponentInChildren<Renderer>().bounds.size.x;
         float width = GetComponentInChildren<Renderer>().bounds.size.y;
@@ -54,7 +58,13 @@ public class CompanionCarInterface : MonoBehaviour
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
-        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
+        carState = new CarState(0, Random.Range(5, road.gameObject.GetComponent<MeshRenderer>().bounds.size.z-5), Random.Range(5, road.gameObject.GetComponent<MeshRenderer>().bounds.size.x-5), 0, length / 2, length / 2);
+    }
+
+    private void Start()
+    {
+        InvokeRepeating("UpdateCar", 0f, 1 / Constants.targetHz);
+        Initialize();
     }
 
     void UpdateCar()
@@ -80,6 +90,13 @@ public class CompanionCarInterface : MonoBehaviour
         transform.rotation = rotation;
         linearVel = new Vector3(carState.dx, 0, carState.dz);
         angularVel = carState.dv;
+        if (carState.x < 0 || 
+            carState.x > road.gameObject.GetComponent<MeshRenderer>().bounds.size.x || 
+            carState.z < 0 ||
+            carState.z > road.gameObject.GetComponent<MeshRenderer>().bounds.size.z) {
+            Debug.Log("Out Of Bounds");
+            Initialize();
+        }
     }
 }
 

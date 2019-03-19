@@ -145,7 +145,7 @@ public class CarController
         float prevGoalX = posController.getGoal();
         float newGoalX = goal.position.x;
         if (goalReceived && Mathf.Abs(prevGoalX - newGoalX) > discontinuityThreshold) {
-            Debug.Log("Large path discontinuity detected. Resetting Controller.");
+            // Debug.Log("Large path discontinuity detected. Resetting Controller.");
             posController.reset();
             velController.reset();
         }
