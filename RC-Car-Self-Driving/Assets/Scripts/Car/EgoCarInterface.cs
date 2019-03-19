@@ -21,6 +21,7 @@ public class EgoCarInterface : Agent {
     private CarState carState;
     private Vector3 linearVel;
     private float angularVel = 0;
+    private float acceleration = 10f;
 
     // Car detection parameters
     private int numLineSegments = 100;
@@ -141,8 +142,7 @@ public class EgoCarInterface : Agent {
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
-        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
-        carState.acceleration = 10f;
+        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2, acceleration);
         goalPos = transform.position;
         SetTargetPosition(goalPos);
 

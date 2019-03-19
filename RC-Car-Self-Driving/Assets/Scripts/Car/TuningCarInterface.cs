@@ -17,6 +17,7 @@ public class TuningCarInterface : MonoBehaviour
     private CarState carState;
     private Vector3 linearVel = new Vector3(0, 0, 0);
     private float angularVel = 0;
+    private float acceleration = 2f;
 
     void Awake()
     {
@@ -43,7 +44,7 @@ public class TuningCarInterface : MonoBehaviour
         throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
 
         // Set initial car state
-        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2);
+        carState = new CarState(0, transform.position.z, transform.position.x, 0, length / 2, length / 2, acceleration);
     }
 
     void UpdateCar()

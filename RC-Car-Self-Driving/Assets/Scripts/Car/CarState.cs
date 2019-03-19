@@ -13,13 +13,13 @@ public class CarState
     public float dpsi;
     public float dv;
 
-    public float acceleration = 2f;
+    private float acceleration;
     private float betaMultiplier = 25f;
 
     private float lr;
     private float lf;
 
-    public CarState(float v, float z, float x, float psi, float lr, float lf)
+    public CarState(float v, float z, float x, float psi, float lr, float lf, float acceleration)
     {
         this.v = v;
         this.z = z;
@@ -27,6 +27,7 @@ public class CarState
         this.psi = psi;
         this.lr = lr;
         this.lf = lf;
+        this.acceleration = acceleration;
 
         Debug.Log(string.Format("setting v as {0}", v));
         Debug.Log(string.Format("setting z as {0}", z));
