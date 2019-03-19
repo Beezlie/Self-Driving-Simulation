@@ -1,17 +1,9 @@
 ﻿<Properties StartupConfiguration="{2367B1BA-0130-6E55-865A-48B5CCE8AC6F}|">
   <MonoDevelop.Ide.ItemProperties.Assembly-CSharp PreferredExecutionTarget="Unity.Editor" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/Scripts/Car/CompanionCarManager.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="Assets/RosSharp/Scripts/RosBridgeClient/RosCommuncation/PoseStampedSubscriber.cs">
     <Files>
-      <File FileName="Assets/Scripts/ADAS_Common/LateralController.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/ADAS_Common/PIDController.cs" Line="63" Column="18" />
-      <File FileName="Assets/Scripts/ADAS_Common/StanleyController.cs" Line="70" Column="18" />
-      <File FileName="Assets/Scripts/ADAS_Common/CarController.cs" Line="138" Column="47" />
-      <File FileName="Assets/Scripts/Car/CarState.cs" Line="41" Column="41" />
-      <File FileName="Assets/Scripts/Car/EgoCarInterface.cs" Line="119" Column="38" />
-      <File FileName="Assets/Scripts/RosCommunication/TrackSpeedSubscriber.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Environment/RepeatingBackground.cs" Line="43" Column="1" />
-      <File FileName="Assets/Scripts/Car/CompanionCarInterface.cs" Line="1" Column="1" />
-      <File FileName="Assets/Scripts/Car/CompanionCarManager.cs" Line="1" Column="1" />
+      <File FileName="Assets/Scripts/RosCommunication/CarPositionUpdater.cs" Line="75" Column="99" />
+      <File FileName="Assets/RosSharp/Scripts/RosBridgeClient/RosCommuncation/PoseStampedSubscriber.cs" Line="20" Column="18" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug" />
