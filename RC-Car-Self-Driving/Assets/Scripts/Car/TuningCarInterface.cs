@@ -17,6 +17,15 @@ public class TuningCarInterface : MonoBehaviour
     private CarState carState;
     private Vector3 linearVel = new Vector3(0, 0, 0);
     private float angularVel = 0;
+    float length;
+    float width;
+
+    public void ResetParams()
+    {
+        carController = new CarController(length);
+        steerSys = new FirstOrderSystem(Constants.carSimSteeringK, Constants.carSimSteeringTau, Constants.targetHz, 0f);
+        throttleSys = new AsymmetricFirstOrderSystem(Constants.carSimVelK, Constants.carSimVelIncreaseTau, Constants.carSimVelDecreaseTau, Constants.targetHz, 0f);
+    }
 
     void Awake()
     {
@@ -33,8 +42,8 @@ public class TuningCarInterface : MonoBehaviour
         InvokeRepeating("UpdateCar", 0f, 1 / Constants.targetHz);
 
         //Get dimensions of car sprite
-        float length = GetComponentInChildren<Renderer>().bounds.size.x;
-        float width = GetComponentInChildren<Renderer>().bounds.size.y;
+        length = GetComponentInChildren<Renderer>().bounds.size.x;
+        width = GetComponentInChildren<Renderer>().bounds.size.y;
         Debug.Log(string.Format("car length: {0}", length));
         Debug.Log(string.Format("car width: {0}", width));
 

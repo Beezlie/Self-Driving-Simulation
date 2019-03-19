@@ -17,7 +17,18 @@ public class UpdatePIDParams : MonoBehaviour {
     private InputField kdHeading;
     private InputField velDamping;
 
+    private GameObject tuningCar;
+    private TuningCarInterface tuningCarInterface;
+
     void Awake () {
+        //Get reference to tuning car
+        tuningCar = GameObject.Find("TuningCar");
+        if (tuningCar == null)
+        {
+            Debug.Log("The TuningCar object was not found.");
+        }
+        tuningCarInterface = tuningCar.GetComponent<TuningCarInterface>();
+
         //pVel 
         pVel = GameObject.Find("pVelField").GetComponent<InputField>();
         pVel.text = Constants.pVel.ToString();
@@ -77,55 +88,66 @@ public class UpdatePIDParams : MonoBehaviour {
     private void pVelValueChangeCheck()
     {
         Constants.pVel = float.Parse(pVel.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void iVelValueChangeCheck()
     {
         Constants.iVel = float.Parse(iVel.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void dVelValueChangeCheck()
     {
         Constants.dVel = float.Parse(dVel.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void pPosValueChangeCheck()
     {
         Constants.pPos = float.Parse(pPos.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void iPosValueChangeCheck()
     {
         Constants.iPos = float.Parse(iPos.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void dPosValueChangeCheck()
     {
         Constants.dPos = float.Parse(dPos.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void kFFValueChangeCheck()
     {
         Constants.kFeedForward = float.Parse(kFF.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void kCTValueChangeCheck()
     {
         Constants.kCrosstrack = float.Parse(kCT.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void kdHeadingValueChangeCheck()
     {
         Constants.kdHeading = float.Parse(kdHeading.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void kpHeadingValueChangeCheck()
     {
         Constants.kpHeading = float.Parse(kpHeading.text);
+        tuningCarInterface.ResetParams();
     }
 
     private void velDampingValueChangeCheck()
     {
         Constants.velDamping = float.Parse(velDamping.text);
+        tuningCarInterface.ResetParams();
     }
 }

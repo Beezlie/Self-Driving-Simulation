@@ -24,7 +24,7 @@ public class GoalPositionPublisher : MonoBehaviour
     private void Update()
     {
         //Publish the EgoCar's goal pose
-        goalPublisher.PublishedTransform.position = egoCar.GetComponent<EgoCarInterface>().GetTargetPosition();
+        goalPublisher.PublishedTransform.position = egoCar.GetComponent<EgoCarTrainingInterface>().GetTargetPosition();
         goalPublisher.PublishedTransform.rotation = egoCar.transform.rotation;
     }
 }
